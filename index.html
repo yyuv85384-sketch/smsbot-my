@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMS Bot | USDT TRC20</title>
+    <title>SMS Bot Pro | USDT TRC20</title>
     <style>
         :root {
             --primary: #6c5ce7;
@@ -18,1886 +18,435 @@
             --success: #00b894;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0f0c29;
+            background: linear-gradient(135deg, #24243e, #302b63, #0f0c29);
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
             color: var(--dark);
         }
         
-        /* Контейнер приложения */
         .app-container {
-            max-width: 450px;
+            max-width: 500px;
             margin: 0 auto;
             background: white;
-            border-radius: 25px;
-            box-shadow: 0 25px 75px rgba(0,0,0,0.4);
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             overflow: hidden;
-            min-height: 90vh;
+            min-height: 95vh;
             display: flex;
             flex-direction: column;
         }
         
-        /* Шапка */
+        /* Header */
         .header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 25px 20px 20px;
+            padding: 30px 20px 25px;
             text-align: center;
             position: relative;
         }
         
         .header::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            right: 0;
-            height: 20px;
-            background: white;
-            border-radius: 20px 20px 0 0;
-        }
-        
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .logo-icon {
-            background: white;
-            color: var(--primary);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
+            content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+            height: 25px; background: white; border-radius: 25px 25px 0 0;
         }
         
         .user-info {
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(10px);
-            padding: 12px 20px;
-            border-radius: 15px;
+            padding: 10px 15px;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
+            font-size: 13px;
             margin-top: 15px;
-            border: 1px solid rgba(255,255,255,0.2);
         }
-        
-        /* Карта баланса */
+
+        /* Balance Card */
         .balance-card {
             background: white;
-            color: var(--dark);
-            margin: 30px 20px 20px;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(108, 92, 231, 0.2);
-            text-align: center;
-            position: relative;
-            z-index: 1;
-            border: 2px solid var(--light);
-        }
-        
-        .balance-card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border-radius: 22px;
-            z-index: -1;
-            opacity: 0.1;
-        }
-        
-        .balance-label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 8px;
-        }
-        
-        .balance-amount {
-            font-size: 48px;
-            font-weight: bold;
-            color: var(--primary);
-            margin: 5px 0;
-            line-height: 1;
-        }
-        
-        .balance-subtitle {
-            font-size: 14px;
-            color: var(--secondary);
-            font-weight: 600;
-        }
-        
-        /* Навигация */
-        .nav-tabs {
-            display: flex;
-            background: var(--light);
-            border-bottom: 3px solid var(--gray);
-            padding: 0 5px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 18px 10px;
-            text-align: center;
-            background: none;
-            border: none;
-            font-weight: 600;
-            color: var(--dark);
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            font-size: 14px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .tab i {
-            font-size: 20px;
-        }
-        
-        .tab.active {
-            color: var(--primary);
-        }
-        
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 10px;
-            right: 10px;
-            height: 3px;
-            background: var(--primary);
-            border-radius: 3px 3px 0 0;
-        }
-        
-        /* Контент */
-        .content {
-            flex: 1;
-            padding: 25px;
-            overflow-y: auto;
-            background: var(--light);
-        }
-        
-        .section {
-            display: none;
-            animation: fadeIn 0.3s;
-        }
-        
-        .section.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Карточки магазина */
-        .shop-items {
-            display: grid;
-            gap: 20px;
-        }
-        
-        .shop-item {
-            background: white;
-            border-radius: 18px;
-            padding: 25px;
-            border: 2px solid transparent;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .shop-item:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(108, 92, 231, 0.25);
-        }
-        
-        .shop-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-        }
-        
-        .item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .sms-count {
-            font-size: 32px;
-            font-weight: bold;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .sms-count::before {
-            content: '💬';
-            font-size: 24px;
-        }
-        
-        .price {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            padding: 8px 20px;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 16px;
-            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
-        }
-        
-        .usdt-price {
-            color: var(--secondary);
-            font-size: 18px;
-            font-weight: 600;
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .usdt-price::before {
-            content: '💎';
-        }
-        
-        .buy-btn {
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
-        }
-        
-        .buy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(108, 92, 231, 0.4);
-        }
-        
-        /* Форма отправки SMS */
-        .sms-form {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid var(--gray);
-            border-radius: 12px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        .form-input:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
-        }
-        
-        .form-textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-        
-        .form-select {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid var(--gray);
-            border-radius: 12px;
-            font-size: 16px;
-            background: white;
-            cursor: pointer;
-        }
-        
-        .submit-btn {
-            width: 100%;
-            background: linear-gradient(135deg, var(--secondary), #00a085);
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.3);
-        }
-        
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(0, 184, 148, 0.4);
-        }
-        
-        /* Модальные окна */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            margin: 10px 20px 20px;
             padding: 20px;
-            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid var(--gray);
         }
         
-        .modal-overlay.active {
-            display: flex;
-            animation: modalBgIn 0.3s;
+        .balance-amount { font-size: 42px; font-weight: 800; color: var(--primary); }            position: fixed; top:0; left:0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: none; z-index: 1000;
+            align-items: center; justify-content: center; padding: 20px;
         }
-        
-        @keyframes modalBgIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
         .modal {
-            background: white;
-            border-radius: 25px;
-            width: 100%;
-            max-width: 450px;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: modalIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            background: white; border-radius: 20px; width: 100%; max-width: 400px;
+            max-height: 90vh; overflow-y: auto; padding: 25px;
         }
-        
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        
-        .modal-header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            padding: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 25px 25px 0 0;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        
-        .close-modal {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
-            transition: background 0.3s;
-        }
-        
-        .close-modal:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        
-        .modal-body {
-            padding: 30px;
-        }
-        
-        /* QR код */
-        .qr-container {
-            text-align: center;
-            margin: 20px 0 30px;
-            padding: 25px;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 20px;
-            border: 2px dashed var(--gray);
-        }
-        
-        #qr-code {
-            width: 220px;
-            height: 220px;
-            margin: 0 auto;
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        
-        /* Адрес кошелька */
-        .address-box {
-            background: var(--light);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            word-break: break-all;
-            font-family: 'Courier New', monospace;
-            font-size: 16px;
-            line-height: 1.6;
-            border: 2px solid var(--gray);
-        }
-        
-        /* Кнопки */
-        .copy-btn {
-            width: 100%;
-            background: linear-gradient(135deg, var(--info), #0870c9);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 15px 0;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 8px 25px rgba(9, 132, 227, 0.3);
-        }
-        
-        .copy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(9, 132, 227, 0.4);
-        }
-        
-        /* Инструкции */
-        .instructions {
-            margin: 25px 0;
-            padding: 25px;
-            background: linear-gradient(135deg, #fff8e1, #ffeaa7);
-            border-radius: 18px;
-            border-left: 6px solid var(--warning);
-        }
-        
-        .instructions h4 {
-            color: var(--dark);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .instructions ul {
-            margin-left: 20px;
-        }
-        
-        .instructions li {
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-        
-        /* История */
-        .history-list {
-            max-height: 500px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-        
+        .qr-wrap { text-align: center; margin: 15px 0; background: #f8f9fa; padding: 15px; border-radius: 15px; }
+        canvas { max-width: 100% !important; height: auto !important; }
+
+        /* History */
         .history-item {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            border-left: 5px solid var(--primary);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
-        }
-        
-        .history-item:hover {
-            transform: translateX(5px);
-        }
-        
-        .history-success {
-            border-left-color: var(--success);
-        }
-        
-        .history-pending {
-            border-left-color: var(--warning);
-        }
-        
-        .history-failed {
-            border-left-color: var(--danger);
-        }
-        
-        /* Админ панель */
-        .admin-panel {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-            border-radius: 20px;
-            padding: 25px;
-            margin-top: 25px;
-            border: 2px solid var(--warning);
-            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.1);
-        }
-        
-        .admin-section {
-            display: none;
-        }
-        
-        .admin-section.active {
-            display: block;
-        }
-        
-        .admin-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .admin-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-        
-        .admin-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        
-        .admin-card i {
-            font-size: 32px;
-            margin-bottom: 10px;
-            display: block;
-        }
-        
-        .admin-btn {
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 10px 0;
-            transition: all 0.3s;
-        }
-        
-        .admin-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
-        }
-        
-        /* Сообщения статуса */
-        .status-message {
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            display: none;
-            animation: fadeIn 0.3s;
-        }
-        
-        .status-message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 2px solid #c3e6cb;
-            display: block;
-        }
-        
-        .status-message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 2px solid #f5c6cb;
-            display: block;
-        }
-        
-        .status-message.loading {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 2px solid #bee5eb;
-            display: block;
-            text-align: center;
-        }
-        
-        /* Загрузчик */
-        .spinner {
-            border: 4px solid var(--gray);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Футер */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
+            background: white; padding: 15px; border-radius: 12px;
+            margin-bottom: 10px; border-left: 5px solid var(--primary);
             font-size: 13px;
-            border-top: 2px solid var(--light);
-            background: white;
         }
+        .history-item.payment { border-left-color: var(--success); }
         
-        .footer a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
+        .status-pill {
+            padding: 3px 8px; border-radius: 5px; font-size: 10px;
+            text-transform: uppercase; font-weight: bold; float: right;
         }
-        
-        /* Адаптивность */
-        @media (max-width: 480px) {
-            .app-container {
-                border-radius: 20px;
-                max-width: 100%;
-            }
-            
-            .balance-amount {
-                font-size: 40px;
-            }
-            
-            .nav-tabs {
-                padding: 0;
-            }
-            
-            .tab {
-                padding: 15px 5px;
-                font-size: 13px;
-            }
-            
-            .tab i {
-                font-size: 18px;
-            }
-            
-            .content {
-                padding: 20px;
-            }
-            
-            .shop-item {
-                padding: 20px;
-            }
-            
-            .sms-count {
-                font-size: 28px;
-            }
-            
-            #qr-code {
-                width: 200px;
-                height: 200px;
-            }
+        .status-pending { background: #ffeaa7; color: #d35400; }
+        .status-success { background: #55efc4; color: #00b894; }
+
+        /* Utils */
+        .copy-area {
+            background: #f1f2f6; padding: 10px; border-radius: 8px;
+            font-family: monospace; font-size: 12px; position: relative;
+            word-break: break-all; margin: 10px 0; border: 1px dashed #ccc;
         }
+        .loading-spinner {
+            width: 30px; height: 30px; border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 10px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
-    <!-- Иконки Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- QR Code Library -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 </head>
 <body>
-    <div class="app-container" id="app">
-        <!-- Шапка -->
-        <div class="header">
-            <div class="logo">
-                <div class="logo-icon">💬</div>
-                <div>SMS Bot</div>
-            </div>
-            <div class="user-info">
-                <span><i class="fas fa-user-shield"></i> ID: <span id="user-id">8155919358</span></span>
-                <span><i class="fas fa-gem"></i> USDT TRC20</span>
-            </div>
-        </div>
-        
-        <!-- Карта баланса -->
-        <div class="balance-card">
-            <div class="balance-label">Ваш баланс</div>
-            <div class="balance-amount" id="balance">0 SMS</div>
-            <div class="balance-subtitle" id="balance-usdt">~ 0 USDT</div>
-        </div>
-        
-        <!-- Навигация -->
-        <div class="nav-tabs">
-            <button class="tab active" data-tab="shop">
-                <i class="fas fa-store"></i>
-                <span>Магазин</span>
-            </button>
-            <button class="tab" data-tab="send">
-                <i class="fas fa-paper-plane"></i>
-                <span>Отправить SMS</span>
-            </button>
-            <button class="tab" data-tab="profile">
-                <i class="fas fa-user"></i>
-                <span>Профиль</span>
-            </button>
-            <button class="tab" data-tab="history">
-                <i class="fas fa-history"></i>
-                <span>История</span>
-            </button>
-            <!-- Админ меню (только для админа) -->
-            <button class="tab admin-only" data-tab="admin" style="display: none;">
-                <i class="fas fa-crown"></i>
-                <span>Админ</span>
-            </button>
-        </div>
-        
-        <!-- Основной контент -->
-        <div class="content">
-            <!-- Магазин -->
-            <div class="section active" id="shop-section">
-                <h3 style="margin-bottom: 25px; color: var(--primary);">
-                    <i class="fas fa-shopping-cart"></i> Выберите пакет SMS:
-                </h3>
-                <div class="shop-items" id="shop-items">
-                    <!-- Товары загружаются через JS -->
-                </div>
-            </div>
-            
-            <!-- Отправка SMS -->
-            <div class="section" id="send-section">
-                <h3 style="margin-bottom: 25px; color: var(--primary);">
-                    <i class="fas fa-paper-plane"></i> Отправить SMS
-                </h3>
-                <div class="sms-form">
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-phone"></i> Номер телефона
-                        </label>
-                        <input type="tel" class="form-input" id="phone-number" 
-                               placeholder="+7 (900) 123-45-67" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-message"></i> Текст сообщения
-                        </label>
-                        <textarea class="form-input form-textarea" id="message-text" 
-                                  placeholder="Введите текст SMS сообщения..." 
-                                  maxlength="160" required></textarea>
-                        <div style="text-align: right; margin-top: 5px; color: #666; font-size: 14px;">
-                            <span id="char-count">0</span>/160 символов
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-clock"></i> Приоритет отправки
-                        </label>
-                        <select class="form-select" id="priority">
-                            <option value="low">Низкий (до 30 минут)</option>
-                            <option value="normal" selected>Обычный (до 10 минут)</option>
-                            <option value="high">Высокий (до 2 минут)</option>
-                            <option value="instant">Мгновенный (до 30 секунд)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-sms"></i> Количество SMS
-                        </label>
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <input type="range" class="form-input" id="sms-count" 
-                                   min="1" max="10" value="1" style="flex: 1;">
-                            <span style="font-weight: bold; font-size: 20px; color: var(--primary);">
-                                <span id="sms-count-display">1</span> SMS
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group" id="cost-container" style="display: none;">
-                        <label class="form-label">
-                            <i class="fas fa-calculator"></i> Стоимость отправки
-                        </label>
-                        <div style="background: var(--light); padding: 15px; border-radius: 12px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: bold; color: var(--primary);">
-                                <span id="send-cost">1</span> SMS
-                            </div>
-                            <div style="color: #666; font-size: 14px; margin-top: 5px;">
-                                Будет списано с вашего баланса
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button class="submit-btn" id="send-sms-btn">
-                        <i class="fas fa-paper-plane"></i> Отправить SMS
-                    </button>
-                    
-                    <div id="send-status" class="status-message"></div>
-                </div>
-            </div>
-            
-            <!-- Профиль -->
-            <div class="section" id="profile-section">
-                <h3 style="margin-bottom: 25px; color: var(--primary);">
-                    <i class="fas fa-user-circle"></i> Ваш профиль
-                </h3>
-                <div class="profile-info">
-                    <div class="info-card" style="background: white; border-radius: 18px; padding: 25px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                            <div style="background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px;">
-                                <i class="fas fa-user-shield"></i>
-                            </div>
-                            <div>
-                                <div style="font-size: 20px; font-weight: bold; color: var(--dark);">Администратор</div>
-                                <div style="color: #666; font-size: 14px;">ID: <span id="profile-id-display">8155919358</span></div>
-                            </div>
-                        </div>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                            <div style="background: var(--light); padding: 15px; border-radius: 12px; text-align: center;">
-                                <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Баланс SMS</div>
-                                <div style="font-size: 24px; font-weight: bold; color: var(--primary);">
-                                    <span id="profile-balance-display">0</span>
-                                </div>
-                            </div>
-                            <div style="background: var(--light); padding: 15px; border-radius: 12px; text-align: center;">
-                                <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Отправлено</div>
-                                <div style="font-size: 24px; font-weight: bold; color: var(--success);">
-                                    <span id="sent-count">0</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="background: var(--light); padding: 20px; border-radius: 15px; margin-top: 20px;">
-                            <div style="font-size: 14px; color: #666; margin-bottom: 10px;">USDT TRC20 адрес для пополнения:</div>
-                            <div style="font-family: 'Courier New', monospace; font-size: 16px; font-weight: bold; color: var(--dark); word-break: break-all;">
-                                THzWYUCCq53zbxZCcbeUXppLz7MNySa5B1
-                            </div>
-                            <button class="copy-btn" onclick="copyToClipboard('THzWYUCCq53zbxZCcbeUXppLz7MNySa5B1')" 
-                                    style="margin-top: 15px; background: linear-gradient(135deg, var(--info), #0870c9);">
-                                <i class="fas fa-copy"></i> Скопировать адрес
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- История -->
-            <div class="section" id="history-section">
-                <h3 style="margin-bottom: 25px; color: var(--primary);">
-                    <i class="fas fa-history"></i> История операций
-                </h3>
-                <div class="history-controls" style="margin-bottom: 20px; display: flex; gap: 10px;">
-                    <button class="admin-btn" onclick="filterHistory('all')" style="background: var(--primary);">Все</button>
-                    <button class="admin-btn" onclick="filterHistory('payments')" style="background: var(--secondary);">Платежи</button>
-                    <button class="admin-btn" onclick="filterHistory('sms')" style="background: var(--info);">SMS</button>
-                </div>
-                <div class="history-list" id="history-list">
-                    <!-- История загружается через JS -->
-                </div>
-            </div>
-            
-            <!-- Админ панель -->
-            <div class="section" id="admin-section">
-                <h3 style="margin-bottom: 25px; color: var(--primary);">
-                    <i class="fas fa-crown"></i> Административная панель
-                </h3>
-                
-                <!-- Админ навигация -->
-                <div class="admin-tabs" style="display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap;">
-                    <button class="admin-btn admin-tab active" data-admin-tab="dashboard">
-                        <i class="fas fa-tachometer-alt"></i> Статистика
-                    </button>
-                    <button class="admin-btn admin-tab" data-admin-tab="users">
-                        <i class="fas fa-users"></i> Пользователи
-                    </button>
-                    <button class="admin-btn admin-tab" data-admin-tab="sms">
-                        <i class="fas fa-sms"></i> Управление SMS
-                    </button>
-                    <button class="admin-btn admin-tab" data-admin-tab="payments">
-                        <i class="fas fa-money-bill-wave"></i> Платежи
-                    </button>
-                    <button class="admin-btn admin-tab" data-admin-tab="settings">
-                        <i class="fas fa-cog"></i> Настройки
-                    </button>
-                </div>
-                
-                <!-- Админ контент -->
-                <div id="admin-dashboard" class="admin-section active">
-                    <div class="admin-panel">
-                        <h4 style="color: var(--primary); margin-bottom: 20px;">📊 Общая статистика</h4>
-                        <div class="admin-grid">
-                            <div class="admin-card" onclick="showAdminModal('users')">
-                                <i class="fas fa-users" style="color: var(--primary);"></i>
-                                <div style="font-size: 24px; font-weight: bold;" id="total-users">1</div>
-                                <div style="color: #666; font-size: 14px;">Пользователей</div>
-                            </div>
-                            <div class="admin-card" onclick="showAdminModal('sms')">
-                                <i class="fas fa-sms" style="color: var(--secondary);"></i>
-                                <div style="font-size: 24px; font-weight: bold;" id="total-sms">0</div>
-                                <div style="color: #666; font-size: 14px;">SMS отправлено</div>
-                            </div>
-                            <div class="admin-card" onclick="showAdminModal('payments')">
-                                <i class="fas fa-money-bill-wave" style="color: var(--success);"></i>
-                                <div style="font-size: 24px; font-weight: bold;" id="total-payments">0</div>
-                                <div style="color: #666; font-size: 14px;">Платежей</div>
-                            </div>
-                            <div class="admin-card" onclick="showAdminModal('revenue')">
-                                <i class="fas fa-chart-line" style="color: var(--warning);"></i>
-                                <div style="font-size: 24px; font-weight: bold;" id="total-revenue">0</div>
-                                <div style="color: #666; font-size: 14px;">USDT получено</div>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: 25px;">
-                            <h4 style="color: var(--primary); margin-bottom: 15px;">⚡ Быстрые действия</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <button class="admin-btn" onclick="adminAddSMS()" style="background: var(--success);">
-                                    <i class="fas fa-plus"></i> Добавить SMS
-                                </button>
-                                <button class="admin-btn" onclick="adminAddUser()" style="background: var(--info);">
-                                    <i class="fas fa-user-plus"></i> Добавить пользователя
-                                </button>
-                                <button class="admin-btn" onclick="adminViewPayments()" style="background: var(--warning);">
-                                    <i class="fas fa-list"></i> Все платежи
-                                </button>
-                                <button class="admin-btn" onclick="adminExportData()" style="background: var(--primary);">
-                                    <i class="fas fa-download"></i> Экспорт данных
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Остальные админ разделы -->
-                <div id="admin-users" class="admin-section">
-                    <!-- Контент загружается динамически -->
-                </div>
-                
-                <div id="admin-sms" class="admin-section">
-                    <!-- Контент загружается динамически -->
-                </div>
-                
-                <div id="admin-payments" class="admin-section">
-                    <!-- Контент загружается динамически -->
-                </div>
-                
-                <div id="admin-settings" class="admin-section">
-                    <!-- Контент загружается динамически -->
-                </div>
-            </div>
-        </div>
-        
-        <!-- Футер -->
-        <div class="footer">
-            <p>💎 <strong>SMS Bot</strong> | Отправка SMS через USDT TRC20</p>
-            <p style="margin-top: 5px; font-size: 12px;">
-                TRC20: THzWYUCCq53zbxZCcbeUXppLz7MNySa5B1
-            </p>
-            <p style="margin-top: 10px; color: #888; font-size: 11px;">
-                © 2024 SMS Bot System | Только для авторизованных пользователей
-            </p>
-        </div>
-    </div>
-    
-    <!-- Модальное окно оплаты -->
-    <div class="modal-overlay" id="payment-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 style="margin: 0;"><i class="fas fa-money-bill-wave"></i> Оплата USDT</h3>
-                <button class="close-modal" onclick="closeModal('payment')">×</button>
-            </div>
-            <div class="modal-body" id="payment-modal-content">
-                <!-- Контент загружается динамически -->
-            </div>
-        </div>
-    </div>
-    
-    <!-- Модальное окно админа -->
-    <div class="modal-overlay" id="admin-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 style="margin: 0;" id="admin-modal-title"><i class="fas fa-crown"></i> Админ</h3>
-                <button class="close-modal" onclick="closeModal('admin')">×</button>
-            </div>
-            <div class="modal-body" id="admin-modal-content">
-                <!-- Контент загружается динамически -->
-            </div>
+
+<div class="app-container">
+    <div class="header">
+        <h2 id="app-title"><i class="fas fa-comment-sms"></i> SMS BOT CLOUD</h2>
+        <div class="user-info">
+            <span><i class="fas fa-id-badge"></i> ID: <span id="my-id">Загрузка...</span></span>
+            <span><i class="fas fa-shield-halved"></i> Статус: User</span>
         </div>
     </div>
 
-    <script>
-        // ==================== КОНФИГУРАЦИЯ ====================
-        const CONFIG = {
-            ADMIN_ID: '8155919358',
-            ADMIN_IP: '85.206.171.26',
-            TRC20_ADDRESS: 'THzWYUCCq53zbxZCcbeUXppLz7MNySa5B1',
-            TRONGRID_API_KEY: 'd9c53e5e-eb76-4d0d-a768-8d300a28cee2',
-            USDT_CONTRACT: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-            USDT_RATE: 90,
-            SMS_PACKAGES: [
-                { sms: 30, rub: 300 },
-                { sms: 100, rub: 800 },
-                { sms: 200, rub: 1500 },
-                { sms: 500, rub: 3500 }
-            ],
-            SMS_COST_PER_MESSAGE: 1 // 1 SMS за 1 сообщение
+    <div class="balance-card">
+        <div class="balance-label">Доступно для отправки</div>
+        <div class="balance-amount" id="user-balance">0</div>
+        <div style="color: var(--secondary); font-size: 12px; font-weight: 600;">SMS СООБЩЕНИЙ</div>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab active" onclick="showSection('shop')"><i class="fas fa-store"></i>Пакеты</button>
+        <button class="tab" onclick="showSection('send')"><i class="fas fa-paper-plane"></i>Отправить</button>
+        <button class="tab" onclick="showSection('history')"><i class="fas fa-list-ul"></i>История</button>
+        <button class="tab" onclick="showSection('profile')"><i class="fas fa-user-gear"></i>Профиль</button>
+        <button class="tab admin-only" onclick="showSection('admin')" style="display:none;"><i class="fas fa-crown"></i>Админ</button>
+    </div>
+
+    <div class="content">
+        <!-- Магазин -->
+        <div id="shop" class="section active">
+            <h4 style="margin-bottom:15px;">Выберите пакет пополнения:</h4>
+            <div id="packages-list"></div>
+        </div>
+
+        <!-- Отправка -->
+        <div id="send" class="section">
+            <div class="form-group">
+                <label>Номер телефона</label>
+                <input type="tel" id="sms-phone" placeholder="+79000000000">
+            </div>
+            <div class="form-group">
+                <label>Текст сообщения (латиница/кириллица)</label>
+                <textarea id="sms-text" rows="4" placeholder="Введите ваше сообщение..."></textarea>
+                <div style="font-size: 11px; text-align: right; color: #888;" id="char-count">0 / 160</div>
+            </div>
+            <div class="form-group">
+                <label>Приоритет</label>
+                <select id="sms-priority">
+                    <option value="1">Обычный (бесплатно)</option>
+                    <option value="2">Высокий (+1 SMS)</option>
+                </select>
+            </div>
+            <div id="cost-info" style="background:#fff; padding:10px; border-radius:10px; margin-bottom:15px; font-size:14px;">
+                Итого к списанию: <b id="total-sms-cost">1</b> SMS
+            </div>
+            <button class="btn-main" onclick="processSendSMS()">ОТПРАВИТЬ СЕЙЧАС</button>
+        </div>
+
+        <!-- История -->
+        <div id="history" class="section">
+            <h4 style="margin-bottom:15px;">Последние операции:</h4>
+            <div id="history-container"></div>
+        </div>
+
+        <!-- Профиль -->
+        <div id="profile" class="section">
+            <div style="background:white; padding:20px; border-radius:15px; text-align:center;">
+                <i class="fas fa-circle-user" style="font-size:60px; color: var(--primary); margin-bottom:10px;"></i>').value) - 1;
+            document.getElementById('total-sms-cost').innerText = baseCost + extra;
         };
+    };
 
-        // ==================== СОСТОЯНИЕ ====================
-        let userData = {
-            id: CONFIG.ADMIN_ID,
-            balance: 1000, // Начальный баланс для админа
-            isAdmin: true,
-            totalSent: 0,
-            history: [],
-            users: [], // Для админа: список пользователей
-            payments: [] // Для админа: список платежей
-        };
+    function save() {
+        localStorage.setItem('sms_bot_user', JSON.stringify(user));
+    }
 
-        let currentPayment = null;
-        let currentAdminTab = 'dashboard';
+    function updateUI() {
+        document.getElementById('user-balance').innerText = user.balance;
+    }
 
-        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            // Загружаем данные из localStorage
-            loadUserData();
-            
-            // Настройка интерфейса
-            setupNavigation();
-            setupAdminTabs();
-            updateUI();
-            updatePrices();
-            setupSMSEditor();
-            
-            // Показываем админ меню если пользователь админ
-            if (userData.isAdmin) {
-                document.querySelectorAll('.admin-only').forEach(el => {
-                    el.style.display = 'flex';
-                });
-            }
-            
-            // Загружаем админ статистику
-            if (userData.isAdmin) {
-                loadAdminStats();
-            }
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    // --- SHOP LOGIC ---
+    function renderPackages() {
+        const container = document.getElementById('packages-list');
+        container.innerHTML = '';
+        CONFIG.PACKAGES.forEach(pkg => {
+            const usdt = (pkg.price / CONFIG.USDT_RATE).toFixed(2);
+            container.innerHTML += `
+                <div class="shop-item" onclick="openPayment(${pkg.id})">
+                    <div class="item-row">
+                        <div>
+                            <div class="sms-qty">${pkg.qty} SMS</div>
+                            <div style="font-size:12px; color:#777;">Быстрая доставка</div>
+                        </div>
+                        <div class="price-badge">${usdt} USDT</div>
+                    </div>
+                </div>
+            `;
         });
+    }
 
-        // ==================== ЗАГРУЗКА ДАННЫХ ====================
-        function loadUserData() {
-            const saved = localStorage.getItem('sms_bot_data');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    userData = { ...userData, ...parsed };
-                } catch (e) {
-                    console.log('Ошибка загрузки данных, используем начальные');
-                }
-            }
-        }
+    function openPayment(pkgId) {
+        const pkg = CONFIG.PACKAGES.find(p => p.id === pkgId);
+        const usdt = (pkg.price / CONFIG.USDT_RATE).toFixed(2);
+        
+        currentOrder = { ...pkg, usdt: usdt };
+        
+        document.getElementById('pay-amount').innerText = usdt + " USDT";
+        document.getElementById('pay-modal').style.display = 'flex';
+        
+        // Генерация QR
+        QRCode.toCanvas(document.getElementById('qrcode'), `tron:${CONFIG.WALLET}?amount=${usdt}`, function (error) {
+            if (error) console.error(error);
+        });
+    }
 
-        function saveUserData() {
-            localStorage.setItem('sms_bot_data', JSON.stringify(userData));
-        }
-
-        // ==================== ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ====================
-        function updateUI() {
-            // Обновляем баланс
-            document.getElementById('balance').textContent = userData.balance + ' SMS';
-            document.getElementById('balance-usdt').textContent = '~ ' + (userData.balance * 0.1).toFixed(2) + ' USDT';
-            document.getElementById('profile-balance-display').textContent = userData.balance;
-            document.getElementById('sent-count').textContent = userData.totalSent;
-            document.getElementById('profile-id-display').textContent = userData.id;
-            
-            // Обновляем магазин
-            updateShopItems();
-            
-            // Обновляем историю
-            updateHistory();
-        }
-
-        // ==================== НАВИГАЦИЯ ====================
-        function setupNavigation() {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    
-                    // Обновляем активные вкладки
-                    tabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Показываем соответствующий раздел
-                    document.querySelectorAll('.section').forEach(section => {
-                        section.classList.remove('active');
-                    });
-                    document.getElementById(tabId + '-section').classList.add('active');
-                    
-                    // Если переходим в админку, обновляем статистику
-                    if (tabId === 'admin' && userData.isAdmin) {
-                        loadAdminStats();
-                    }
-                });
-            });
-        }
-
-        // ==================== АДМИН ВКЛАДКИ ====================
-        function setupAdminTabs() {
-            const adminTabs = document.querySelectorAll('.admin-tab');
-            adminTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-admin-tab');
-                    
-                    // Обновляем активные вкладки
-                    adminTabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Показываем соответствующий раздел
-                    document.querySelectorAll('.admin-section').forEach(section => {
-                        section.classList.remove('active');
-                    });
-                    document.getElementById('admin-' + tabId).classList.add('active');
-                    
-                    currentAdminTab = tabId;
-                    
-                    // Загружаем контент вкладки
-                    loadAdminTabContent(tabId);
-                });
-            });
-        }
-
-        // ==================== ОБНОВЛЕНИЕ ЦЕН ====================
-        async function updatePrices() {
-            try {
-                // Пробуем получить курс USDT/RUB
-                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=rub');
-                const data = await response.json();
-                if (data.tether && data.tether.rub) {
-                    CONFIG.USDT_RATE = data.tether.rub;
-                }
-            } catch (error) {
-                CONFIG.USDT_RATE = 90;
-            }
-            
-            // Обновляем магазин
-            updateShopItems();
-        }
-
-        // ==================== ОБНОВЛЕНИЕ МАГАЗИНА ====================
-        function updateShopItems() {
-            const shopContainer = document.getElementById('shop-items');
-            shopContainer.innerHTML = '';
-            
-            CONFIG.SMS_PACKAGES.forEach(pkg => {
-                const usdtPrice = (pkg.rub / CONFIG.USDT_RATE).toFixed(2);
-                const item = document.createElement('div');
-                item.className = 'shop-item';
-                item.innerHTML = `
-                    <div class="item-header">
-                        <div class="sms-count">${pkg.sms} SMS</div>
-                        <div class="price">${pkg.rub} RUB</div>
-                    </div>
-                    <div class="usdt-price">${usdtPrice} USDT</div>
-                    <p style="color: #666; margin: 10px 0; font-size: 14px;">
-                        <i class="fas fa-bolt"></i> Мгновенное зачисление
-                    </p>
-                    <button class="buy-btn" onclick="buyPackage(${pkg.sms}, ${pkg.rub})">
-                        <i class="fas fa-shopping-cart"></i> Купить за ${usdtPrice} USDT
-                    </button>
-                `;
-                shopContainer.appendChild(item);
-            });
-        }
-
-        // ==================== ПОКУПКА ПАКЕТА ====================
-        function buyPackage(smsAmount, rubPrice) {
-            const usdtAmount = (rubPrice / CONFIG.USDT_RATE).toFixed(2);
-            
-            currentPayment = {
-                id: 'PAY-' + Date.now() + '-' + Math.random().toString(36).substr(2, 8).toUpperCase(),
-                sms: smsAmount,
-                rub: rubPrice,
-                usdt: usdtAmount,
-                status: 'pending',
-                date: new Date().toLocaleString('ru-RU'),
-                type: 'payment'
-            };
-            
-            showPaymentModal();
-        }
-
-        // ==================== МОДАЛЬНОЕ ОКНО ОПЛАТЫ ====================
-        function showPaymentModal() {
-            const modalContent = document.getElementById('payment-modal-content');
-            
-            modalContent.innerHTML = `
-                <div style="text-align: center;">
-                    <div class="qr-container">
-                        <h4 style="color: var(--primary); margin-bottom: 15px;">
-                            <i class="fas fa-qrcode"></i> Отсканируйте QR-код
-                        </h4>
-                        <div id="qr-code"></div>
-                        <p style="font-size: 22px; font-weight: bold; color: var(--secondary); margin: 15px 0;">
-                            ${currentPayment.usdt} USDT
-                        </p>
-                        <p style="color: #666; font-size: 14px;">
-                            за ${currentPayment.sms} SMS
-                        </p>
-                    </div>
-                    
-                    <div class="address-box">
-                        <div style="font-weight: bold; margin-bottom: 10px; color: var(--dark);">
-                            <i class="fas fa-wallet"></i> Адрес TRC20:
-                        </div>
-                        <div style="font-size: 16px; font-weight: bold; color: var(--primary);">
-                            ${CONFIG.TRC20_ADDRESS}
-                        </div>
-                        <br>
-                        <div style="font-weight: bold; margin-bottom: 10px; color: var(--dark);">
-                            <i class="fas fa-fingerprint"></i> ID платежа (MEMO):
-                        </div>
-                        <div style="font-size: 16px; font-weight: bold; color: var(--secondary);">
-                            ${currentPayment.id}
-                        </div>
-                    </div>
-                    
-                    <button class="copy-btn" onclick="copyPaymentDetails()">
-                        <i class="fas fa-copy"></i> Скопировать реквизиты
-                    </button>
-                    
-                    <div class="instructions">
-                        <h4><i class="fas fa-info-circle"></i> Инструкция по оплате:</h4>
-                        <ul>
-                            <li><strong>Сеть:</strong> Только TRON (TRC20)</li>
-                            <li><strong>Токен:</strong> Только USDT</li>
-                            <li><strong>Сумма:</strong> ${currentPayment.usdt} USDT точно</li>
-                            <li><strong>MEMO:</strong> Обязательно укажите: ${currentPayment.id}</li>
-                            <li><strong>Комиссия:</strong> Сети оплачиваете вы</li>
-                            <li><strong>Зачисление:</strong> Автоматически после 1 подтверждения</li>
-                        </ul>
-                    </div>
-                    
-                    <div style="margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 15px;">
-                        <p style="margin-bottom: 15px; color: #666;">
-                            После оплаты вы можете проверить статус на вкладке "История"
-                        </p>
-                        <button class="verify-btn" onclick="manualConfirmPayment()" 
-                                style="background: linear-gradient(135deg, var(--secondary), #00a085);">
-                            <i class="fas fa-check-circle"></i> Я оплатил
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            // Генерируем QR код
-            const qrText = `tron:${CONFIG.TRC20_ADDRESS}?amount=${currentPayment.usdt}&memo=${currentPayment.id}`;
-            QRCode.toCanvas(document.getElementById('qr-code'), qrText, {
-                width: 220,
-                height: 220,
-                margin: 2
-            });
-            
-            // Показываем модальное окно
-            document.getElementById('payment-modal').classList.add('active');
-        }
-
-        // ==================== КОПИРОВАНИЕ РЕКВИЗИТОВ ====================
-        function copyPaymentDetails() {
-            const text = `💎 Оплата SMS\n\nАдрес: ${CONFIG.TRC20_ADDRESS}\nСумма: ${currentPayment.usdt} USDT\nMEMO: ${currentPayment.id}\nСеть: TRON (TRC20)\nТокен: USDT\n\nПосле оплаты SMS зачислятся автоматически.`;
-            
-            navigator.clipboard.writeText(text).then(() => {
-                alert('✅ Реквизиты скопированы в буфер обмена!');
-            }).catch(err => {
-                alert('❌ Ошибка копирования. Скопируйте вручную.');
-            });
-        }
-
-        // ==================== РУЧНОЕ ПОДТВЕРЖДЕНИЕ ====================
-        function manualConfirmPayment() {
-            if (confirm(`Подтвердить получение ${currentPayment.usdt} USDT?\n\nПосле подтверждения на баланс будет зачислено ${currentPayment.sms} SMS`)) {
-                // Добавляем в историю
-                currentPayment.status = 'confirmed';
-                currentPayment.txHash = 'MANUAL-' + Date.now();
-                currentPayment.confirmedAt = new Date().toLocaleString('ru-RU');
-                userData.history.unshift({...currentPayment});
-                
-                // Обновляем баланс
-                userData.balance += currentPayment.sms;
-                
-                // Сохраняем данные
-                saveUserData();
-                updateUI();
-                
-                // Закрываем модальное окно
-                closeModal('payment');
-                
-                // Показываем уведомление
-                showNotification(`✅ Баланс пополнен на ${currentPayment.sms} SMS!`, 'success');
-            }
-        }
-
-        // ==================== НАСТРОЙКА РЕДАКТОРА SMS ====================
-        function setupSMSEditor() {
-            const messageInput = document.getElementById('message-text');
-            const charCount = document.getElementById('char-count');
-            const smsCountSlider = document.getElementById('sms-count');
-            const smsCountDisplay = document.getElementById('sms-count-display');
-            const sendCost = document.getElementById('send-cost');
-            const costContainer = document.getElementById('cost-container');
-            
-            // Подсчет символов
-            messageInput.addEventListener('input', function() {
-                const length = this.value.length;
-                charCount.textContent = length;
-                
-                // Показываем стоимость если есть текст
-                if (length > 0) {
-                    costContainer.style.display = 'block';
-                    const smsCount = Math.ceil(length / 160);
-                    smsCountSlider.max = smsCount;
-                    smsCountSlider.value = smsCount;
-                    smsCountDisplay.textContent = smsCount;
-                    sendCost.textContent = smsCount;
-                } else {
-                    costContainer.style.display = 'none';
-                }
-            });
-            
-            // Слайдер количества SMS
-            smsCountSlider.addEventListener('input', function() {
-                smsCountDisplay.textContent = this.value;
-                sendCost.textContent = this.value;
-            });
-            
-            // Кнопка отправки SMS
-            document.getElementById('send-sms-btn').addEventListener('click', sendSMS);
-        }
-
-        // ==================== ОТПРАВКА SMS ====================
-        function sendSMS() {
-            const phone = document.getElementById('phone-number').value.trim();
-            const message = document.getElementById('message-text').value.trim();
-            const priority = document.getElementById('priority').value;
-            const smsCount = parseInt(document.getElementById('sms-count').value);
-            
-            // Валидация
-            if (!phone) {
-                showNotification('❌ Введите номер телефона', 'error');
-                return;
-            }
-            
-            if (!message) {
-                showNotification('❌ Введите текст сообщения', 'error');
-                return;
-            }
-            
-            if (userData.balance < smsCount) {
-                showNotification(`❌ Недостаточно SMS. Нужно: ${smsCount}, доступно: ${userData.balance}`, 'error');
-                return;
-            }
-            
-            // Создаем запись SMS
-            const smsRecord = {
-                id: 'SMS-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
-                phone: phone,
-                message: message,
-                smsCount: smsCount,
-                priority: priority,
-                status: 'sending',
-                date: new Date().toLocaleString('ru-RU'),
-                type: 'sms'
-            };
-            
-            // Показываем статус отправки
-            const statusDiv = document.getElementById('send-status');
-            statusDiv.className = 'status-message loading';
-            statusDiv.innerHTML = '<div class="spinner"></div><p>Отправка SMS...</p>';
-            
-            // Имитация отправки
-            setTimeout(() => {
-                // Обновляем баланс
-                userData.balance -= smsCount;
-                userData.totalSent += smsCount;
-                
-                // Обновляем статус
-                smsRecord.status = 'sent';
-                smsRecord.sentAt = new Date().toLocaleString('ru-RU');
-                smsRecord.cost = smsCount;
-                
-                // Добавляем в историю
-                userData.history.unshift(smsRecord);
-                
-                // Сохраняем данные
-                saveUserData();
-                updateUI();
-                
-                // Показываем успех
-                statusDiv.className = 'status-message success';
-                statusDiv.innerHTML = `
-                    ✅ SMS успешно отправлено!<br>
-                    <small>Номер: ${phone}<br>
-                    Количество SMS: ${smsCount}<br>
-                    Статус: Доставлено</small>
-                `;
-                
-                // Очищаем форму
-                document.getElementById('phone-number').value = '';
-                document.getElementById('message-text').value = '';
-                document.getElementById('char-count').textContent = '0';
-                document.getElementById('cost-container').style.display = 'none';
-                
-                // Показываем уведомление
-                showNotification(`✅ SMS отправлено на номер ${phone}`, 'success');
-                
-            }, 2000);
-        }
-
-        // ==================== ОБНОВЛЕНИЕ ИСТОРИИ ====================
-        function updateHistory() {
-            const historyList = document.getElementById('history-list');
-            
-            if (userData.history.length === 0) {
-                historyList.innerHTML = `
-                    <div style="text-align: center; padding: 50px 20px; color: #666;">
-                        <i class="fas fa-history" style="font-size: 48px; margin-bottom: 20px; opacity: 0.3;"></i>
-                        <p>История операций пуста</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            historyList.innerHTML = '';
-            
-            userData.history.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = `history-item history-${item.status === 'confirmed' || item.status === 'sent' ? 'success' : 
-                                      item.status === 'pending' ? 'pending' : 'failed'}`;
-                
-                if (item.type === 'payment') {
-                    itemDiv.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                            <div>
-                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                    <i class="fas fa-money-bill-wave" style="color: var(--success);"></i>
-                                    <strong style="color: var(--dark);">${item.sms} SMS</strong>
-                                </div>
-                                <div style="color: #666; font-size: 13px;">
-                                    <div>ID: ${item.id}</div>
-                                    <div>${item.date}</div>
-                                    <div>${item.usdt} USDT</div>
-                                </div>
-                            </div>
-                            <div style="text-align: right;">
-                                <span style="display: inline-block; padding: 5px 12px; border-radius: 20px; 
-                                       background: ${item.status === 'confirmed' ? '#d4edda' : 
-                                                   item.status === 'pending' ? '#fff3cd' : '#f8d7da'}; 
-                                       color: ${item.status === 'confirmed' ? '#155724' : 
-                                               item.status === 'pending' ? '#856404' : '#721c24'}; 
-                                       font-size: 12px; font-weight: bold;">
-                                    ${item.status === 'confirmed' ? '✅ Подтвержден' : 
-                                      item.status === 'pending' ? '⏳ Ожидание' : '❌ Отклонен'}
-                                </span>
-                            </div>
-                        </div>
-                    `;
-                } else if (item.type === 'sms') {
-                    itemDiv.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                            <div>
-                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                    <i class="fas fa-paper-plane" style="color: var(--info);"></i>
-                                    <strong style="color: var(--dark);">Отправка SMS</strong>
-                                </div>
-                                <div style="color: #666; font-size: 13px;">
-                                    <div>${item.phone}</div>
-                                    <div>${item.date}</div>
-                                    <div>${item.smsCount} SMS</div>
-                                </div>
-                            </div>
-                            <div style="text-align: right;">
-                                <span style="display: inline-block; padding: 5px 12px; border-radius: 20px; 
-                                       background: #d4edda; color: #155724; 
-                                       font-size: 12px; font-weight: bold;">
-                                    ✅ Доставлено
-                                </span>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                historyList.appendChild(itemDiv);
-            });
-        }
-
-        // ==================== ФИЛЬТРАЦИЯ ИСТОРИИ ====================
-        function filterHistory(type) {
-            // В реальном приложении здесь была бы фильтрация
-            showNotification(`Фильтр: ${type === 'all' ? 'Все' : type === 'payments' ? 'Платежи' : 'SMS'}`, 'info');
-        }
-
-        // ==================== АДМИН ФУНКЦИИ ====================
-        function loadAdminStats() {
-            // Обновляем статистику
-            document.getElementById('total-users').textContent = userData.users.length + 1; // + админ
-            document.getElementById('total-sms').textContent = userData.totalSent;
-            document.getElementById('total-payments').textContent = userData.history.filter(h => h.type === 'payment').length;
-            
-            // Считаем общую выручку в USDT
-            const totalRevenue = userData.history
-                .filter(h => h.type === 'payment' && h.status === 'confirmed')
-                .reduce((sum, payment) => sum + parseFloat(payment.usdt), 0);
-            document.getElementById('total-revenue').textContent = totalRevenue.toFixed(2);
-        }
-
-        function loadAdminTabContent(tabId) {
-            const container = document.getElementById('admin-' + tabId);
-            
-            switch(tabId) {
-                case 'users':
-                    loadAdminUsers();
-                    break;
-                case 'sms':
-                    loadAdminSMS();
-                    break;
-                case 'payments':
-                    loadAdminPayments();
-                    break;
-                case 'settings':
-                    loadAdminSettings();
-                    break;
-            }
-        }
-
-        function loadAdminUsers() {
-            const container = document.getElementById('admin-users');
-            container.innerHTML = `
-                <div class="admin-panel">
-                    <h4 style="color: var(--primary); margin-bottom: 20px;">
-                        <i class="fas fa-users"></i> Управление пользователями
-                    </h4>
-                    
-                    <div style="margin-bottom: 25px;">
-                        <button class="admin-btn" onclick="adminAddUserModal()" 
-                                style="background: var(--success); margin-bottom: 15px;">
-                            <i class="fas fa-user-plus"></i> Добавить пользователя
-                        </button>
-                        
-                        <div style="background: white; border-radius: 15px; padding: 20px; margin-top: 20px;">
-                            <h5 style="color: var(--dark); margin-bottom: 15px;">Список пользователей</h5>
-                            ${userData.users.length === 0 ? 
-                                `<p style="text-align: center; color: #666; padding: 20px;">
-                                    <i class="fas fa-user-slash"></i> Нет других пользователей
-                                </p>` :
-                                `<div style="max-height: 300px; overflow-y: auto;">
-                                    ${userData.users.map((user, index) => `
-                                        <div style="display: flex; justify-content: space-between; align-items: center; 
-                                             padding: 15px; border-bottom: 1px solid var(--gray);">
-                                            <div>
-                                                <strong>ID: ${user.id}</strong><br>
-                                                <small>Баланс: ${user.balance} SMS</small>
-                                            </div>
-                                            <div>
-                                                <button onclick="editUser(${index})" 
-                                                        style="background: var(--info); color: white; border: none; 
-                                                               padding: 5px 10px; border-radius: 5px; margin-right: 5px;">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button onclick="deleteUser(${index})" 
-                                                        style="background: var(--danger); color: white; border: none; 
-                                                               padding: 5px 10px; border-radius: 5px;">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                </div>`
-                            }
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function adminAddUserModal() {
-            document.getElementById('admin-modal-title').innerHTML = '<i class="fas fa-user-plus"></i> Добавить пользователя';
-            
-            document.getElementById('admin-modal-content').innerHTML = `
-                <div style="padding: 20px;">
-                    <div class="form-group">
-                        <label class="form-label">ID пользователя</label>
-                        <input type="number" class="form-input" id="new-user-id" 
-                               placeholder="Введите ID пользователя">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Начальный баланс SMS</label>
-                        <input type="number" class="form-input" id="new-user-balance" 
-                               value="0" min="0">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Админ доступ</label>
-                        <select class="form-select" id="new-user-admin">
-                            <option value="false">Нет</option>
-                            <option value="true">Да</option>
-                        </select>
-                    </div>
-                    
-                    <button class="admin-btn" onclick="saveNewUser()" 
-                            style="background: var(--success); width: 100%; margin-top: 20px;">
-                        <i class="fas fa-save"></i> Сохранить пользователя
-                    </button>
-                </div>
-            `;
-            
-            document.getElementById('admin-modal').classList.add('active');
-        }
-
-        function saveNewUser() {
-            const id = document.getElementById('new-user-id').value;
-            const balance = parseInt(document.getElementById('new-user-balance').value);
-            const isAdmin = document.getElementById('new-user-admin').value === 'true';
-            
-            if (!id) {
-                showNotification('❌ Введите ID пользователя', 'error');
-                return;
-            }
-            
-            // Добавляем пользователя
-            userData.users.push({
-                id: id,
-                balance: balance,
-                isAdmin: isAdmin,
-                created: new Date().toLocaleString('ru-RU')
-            });
-            
-            saveUserData();
-            loadAdminUsers();
-            closeModal('admin');
-            showNotification('✅ Пользователь добавлен', 'success');
-        }
-
-        function adminAddSMS() {
-            const amount = prompt('Сколько SMS добавить на свой баланс?', '100');
-            if (amount && !isNaN(amount)) {
-                userData.balance += parseInt(amount);
-                userData.history.unshift({
-                    id: 'ADMIN-ADD-' + Date.now(),
-                    type: 'admin_add',
-                    sms: parseInt(amount),
-                    date: new Date().toLocaleString('ru-RU'),
-                    status: 'completed'
-                });
-                saveUserData();
-                updateUI();
-                showNotification(`✅ Добавлено ${amount} SMS на ваш баланс`, 'success');
-            }
-        }
-
-        function adminViewPayments() {
-            const payments = userData.history.filter(h => h.type === 'payment');
-            
-            document.getElementById('admin-modal-title').innerHTML = '<i class="fas fa-money-bill-wave"></i> Все платежи';
-            
-            document.getElementById('admin-modal-content').innerHTML = `
-                <div style="padding: 20px;">
-                    <div style="margin-bottom: 20px;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; 
-                                    background: var(--primary); color: white; padding: 15px; border-radius: 12px;">
-                            <div style="text-align: center;">
-                                <div style="font-size: 24px; font-weight: bold;">${payments.length}</div>
-                                <div style="font-size: 12px;">Всего</div>
-                            </div>
-                            <div style="text-align: center;">
-                                <div style="font-size: 24px; font-weight: bold;">
-                                    ${payments.filter(p => p.status === 'confirmed').length}
-                                </div>
-                                <div style="font-size: 12px;">Подтверждено</div>
-                            </div>
-                            <div style="text-align: center;">
-                                <div style="font-size: 24px; font-weight: bold;">
-                                    ${payments.filter(p => p.status === 'pending').length}
-                                </div>
-                                <div style="font-size: 12px;">Ожидание</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="max-height: 400px; overflow-y: auto;">
-                        ${payments.length === 0 ? 
-                            `<p style="text-align: center; color: #666; padding: 40px 20px;">
-                                <i class="fas fa-money-bill-wave-slash"></i> Нет платежей
-                            </p>` :
-                            payments.map(payment => `
-                                <div style="background: white; border-radius: 12px; padding: 15px; 
-                                            margin-bottom: 10px; border-left: 4px solid ${payment.status === 'confirmed' ? 'var(--success)' : 
-                                                                                          payment.status === 'pending' ? 'var(--warning)' : 'var(--danger)'};">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                        <strong>${payment.sms} SMS</strong>
-                                        <span style="color: ${payment.status === 'confirmed' ? 'var(--success)' : 
-                                                              payment.status === 'pending' ? 'var(--warning)' : 'var(--danger)'}; 
-                                                font-size: 12px;">
-                                            ${payment.status === 'confirmed' ? '✅' : 
-                                              payment.status === 'pending' ? '⏳' : '❌'}
-                                        </span>
-                                    </div>
-                                    <div style="font-size: 13px; color: #666;">
-                                        <div>ID: ${payment.id}</div>
-                                        <div>${payment.date}</div>
-                                        <div>${payment.usdt} USDT</div>
-                                        ${payment.txHash ? `<div>TX: ${payment.txHash.substring(0, 20)}...</div>` : ''}
-                                    </div>
-                                </div>
-                            `).join('')
-                        }
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('admin-modal').classList.add('active');
-        }
-
-        function adminExportData() {
-            const dataStr = JSON.stringify(userData, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = `sms-bot-data-${new Date().toISOString().split('T')[0]}.json`;
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-            
-            showNotification('✅ Данные экспортированы в JSON файл', 'success');
-        }
-
-        // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
-        function showNotification(message, type = 'info') {
-            // Создаем элемент уведомления
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? '#d4edda' : 
-                             type === 'error' ? '#f8d7da' : '#d1ecf1'};
-                color: ${type === 'success' ? '#155724' : 
-                        type === 'error' ? '#721c24' : '#0c5460'};
-                padding: 15px 25px;
-                border-radius: 12px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-                z-index: 10000;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                border: 2px solid ${type === 'success' ? '#c3e6cb' : 
-                                 type === 'error' ? '#f5c6cb' : '#bee5eb'};
-                animation: slideIn 0.3s;
-                max-width: 400px;
-            `;
-            
-            notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 
-                                   type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                <div>${message}</div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Удаляем через 5 секунд
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s';
-                setTimeout(() => notification.remove(), 300);
-            }, 5000);
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showNotification('✅ Скопировано в буфер обмена', 'success');
-            }).catch(err => {
-                showNotification('❌ Ошибка копирования', 'error');
-            });
-        }
-
-        function closeModal(type) {
-            if (type === 'payment') {
-                document.getElementById('payment-modal').classList.remove('active');
-            } else if (type === 'admin') {
-                document.getElementById('admin-modal').classList.remove('active');
-            }
-        }
-
-        // Добавляем CSS для анимаций уведомлений
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
-            }
+    function closeModal() {
+        document.getElementById('pay-modal').style.display = 'none';
+        document.getElementById('payment-status-area').innerHTML = `
+            <button class="btn-main" id="check-pay-btn" onclick="verifyPayment()">Я ОПЛАТИЛ</button>
         `;
-        document.head.appendChild(style);
-    </script>
+    }
+
+    function copyWallet() {
+        navigator.clipboard.writeText(CONFIG.WALLET);
+        alert("Адрес скопирован!");
+    }
+
+    // --- PAYMENT VERIFICATION (SIMULATION) ---
+    function verifyPayment() {
+        const area = document.getElementById('payment-status-area');
+        area.innerHTML = `
+            <div style="text-align:center;">
+                <div class="loading-spinner"></div>
+                <p style="font-size:12px; color:var(--primary);">Поиск транзакции в сети TRON...</p>
+            </div>
+        `;
+
+        // Имитация проверки блокчейна (3 секунды)
+        setTimeout(() => {
+            // В реальности тут должен быть запрос к API (напр. TronGrid)
+            // if(checkChain(CONFIG.WALLET, currentOrder.usdt)) ...
+            
+            completePayment();
+        }, 3500);
+    }
+
+    function completePayment() {
+        user.balance += currentOrder.qty;
+        user.history.unshift({
+            type: 'Пополнение',
+            desc: `Пакет ${currentOrder.qty} SMS`,
+            date: new Date().toLocaleString(),
+            amount: `+${currentOrder.qty}`,
+            status: 'success'
+        });
+        
+        save();
+        updateUI();
+        renderHistory();
+        
+        const area = document.getElementById('payment-status-area');
+        area.innerHTML = `
+            <div style="text-align:center; color: var(--success);">
+                <i class="fas fa-check-circle" style="font-size:40px;"></i>
+                <p><b>Оплата получена!</b></p>
+            </div>
+        `;
+        
+        setTimeout(() => {
+            closeModal();
+            alert(`Успешно! Начислено ${currentOrder.qty} SMS.`);
+        }, 2000);
+    }
+
+    // --- SMS LOGIC ---
+    function processSendSMS() {
+        const phone = document.getElementById('sms-phone').value;
+        const text = document.getElementById('sms-text').value;
+        const cost = parseInt(document.getElementById('total-sms-cost').innerText);
+
+        if (!phone || !text) return alert("Заполните все поля!");
+        if (user.balance < cost) return alert("Недостаточно баланса!");
+
+        if (confirm(`Отправить SMS на номер ${phone}? Списание: ${cost} SMS`)) {
+            user.balance -= cost;
+            user.history.unshift({
+                type: 'Отправка',
+                desc: `На номер: ${phone}`,
+                date: new Date().toLocaleString(),
+                amount: `-${cost}`,
+                status: 'success'
+            });
+            
+            save();
+            updateUI();
+            renderHistory();
+            
+            alert("Сообщение поставлено в очередь на отправку!");
+            document.getElementById('sms-phone').value = '';
+            document.getElementById('sms-text').value = '';
+        }
+    }
+
+    function renderHistory() {
+        const container = document.getElementById('history-container');
+        container.innerHTML = '';
+        
+        if (user.history.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#999; margin-top:20px;">Истории пока нет</p>';
+            return;
+        }
+
+        user.history.forEach(item => {
+            container.innerHTML += `
+                <div class="history-item ${item.amount.includes('+') ? 'payment' : ''}">
+                    <span class="status-pill status-${item.status}">${item.status === 'success' ? 'Выполнено' : 'Ожидание'}</span>
+                    <b>${item.type}</b><br>
+                    <span style="color:#666;">${item.desc}</span><br>
+                    <small style="color:#aaa;">${item.date}</small>
+                    <div style="text-align:right; font-weight:bold; color: ${item.amount.includes('+') ? 'var(--success)' : 'var(--danger)'};">
+                        ${item.amount}
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // --- ADMIN ---
+    function adminAddBalance() {
+        const id = document.getElementById('adm-user-id').value;
+        const amt = parseInt(document.getElementById('adm-amount').value);
+        
+        if (id == user.id) {
+            user.balance += amt;
+            save();
+            updateUI();
+            alert("Баланс начислен вам!");
+        } else {
+            alert("Пользователь не найден в этой сессии (локально).");
+        }
+    }
+</script>
+
 </body>
-                        </html>
+        </html>>
+                <i class="fas fa-check-circle" style="font-size:40px;"></i>
+                <p><b>Оплата получена!</b></p>
+            </div>
+        `;
+        
+        setTimeout(() => {
+            closeModal();
+            alert(`Успешно! Начислено ${currentOrder.qty} SMS.`);
+        }, 2000);
+    }
+
+    // --- SMS LOGIC ---
+    function processSendSMS() {
+        const phone = document.getElementById('sms-phone').value;
+        const text = document.getElementById('sms-text').value;
+        const cost = parseInt(document.getElementById('total-sms-cost').innerText);
+
+        if (!phone || !text) return alert("Заполните все поля!");
+        if (user.balance < cost) return alert("Недостаточно баланса!");
+
+        if (confirm(`Отправить SMS на номер ${phone}? Списание: ${cost} SMS`)) {
+            user.balance -= cost;
+            user.history.unshift({
+                type: 'Отправка',
+                desc: `На номер: ${phone}`,
+                date: new Date().toLocaleString(),
+                amount: `-${cost}`,
+                status: 'success'
+            });
+            
+            save();
+            updateUI();
+            renderHistory();
+            
+            alert("Сообщение поставлено в очередь на отправку!");
+            document.getElementById('sms-phone').value = '';
+            document.getElementById('sms-text').value = '';
+        }
+    }
+
+    function renderHistory() {
+        const container = document.getElementById('history-container');
+        container.innerHTML = '';
+        
+        if (user.history.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#999; margin-top:20px;">Истории пока нет</p>';
+            return;
+        }
+
+        user.history.forEach(item => {
+            container.innerHTML += `
+                <div class="history-item ${item.amount.includes('+') ? 'payment' : ''}">
+                    <span class="status-pill status-${item.status}">${item.status === 'success' ? 'Выполнено' : 'Ожидание'}</span>
+                    <b>${item.type}</b><br>
+                    <span style="color:#666;">${item.desc}</span><br>
+                    <small style="color:#aaa;">${item.date}</small>
+                    <div style="text-align:right; font-weight:bold; color: ${item.amount.includes('+') ? 'var(--success)' : 'var(--danger)'};">
+                        ${item.amount}
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // --- ADMIN ---
+    function adminAddBalance() {
+        const id = document.getElementById('adm-user-id').value;
+        const amt = parseInt(document.getElementById('adm-amount').value);
+        
+        if (id == user.id) {
+            user.balance += amt;
+            save();
+            updateUI();
+            alert("Баланс начислен вам!");
+        } else {
+            alert("Пользователь не найден в этой сессии (локально).");
+        }
+    }
+</script>
+
+</body>
+        </html>

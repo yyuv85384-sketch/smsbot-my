@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SMS-Service Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: var(--tg-theme-bg-color, #fff);
+            --text-color: var(--tg-theme-text-color, #000);
+            --hint-color: var(--tg-theme-hint-color, #999);
+            --button-color: var(--tg-theme-button-color, #248bcf);
+            --button-text: var(--tg-theme-button-text-color, #fff);
+            --secondary-bg: var(--tg-theme-secondary-bg-color, #f4f4f4);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            padding: 20px;
+            text-align: center;
+            background: var(--secondary-bg);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, var(--button-color), #54a9eb);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background: var(--secondary-bg);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--hint-color);
+            font-weight: bold;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            color: var(--button-color);
+            border-bottom: 2px solid var(--button-color);
+        }
+
+        /* Content Sections */
+                .section {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form styling */
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: var(--hint-color); font-size: 14px; }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--secondary-bg);
+            background: var(--secondary-bg);
+            color: var(--text-color);
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .main-btn {
+            background-color: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .main-btn:active { transform: scale(0.98); }
+
+        .template-card {
+            background: var(--secondary-bg);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid transparent;
+        }
+        
+        .template-card:hover { border-color: var(--button-color); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div id="user-info" style="font-weight: bold; font-size: 18px;">Привет!</div>
+    <div class="balance-card">
+        <div>
+            <div style="font-size: 12px; opacity: 0.8;">Ваш баланс</div>
+            <div id="user-balance" style="font-size: 24px; font-weight: bold;">0 SMS</div>
+        </div>
+        <i class="fas fa-wallet fa-2x"></i>
+    </div>
+</header>
+
+<div class="tabs">
+    <button class="tab-btn active" onclick="showSection('sms')">SMS</button>
+    <button class="tab-btn" onclick="showSection('shop')">МАГАЗИН</button>
+    <button class="tab-btn" onclick="showSection('profile')">ПРОФИЛЬ</button>
+</div>
+
+<!-- Секция SMS -->
+<div id="sms" class="section active">
+    <h3>Отправить сообщение</h3>
+        <div class="input-group">
+        <label>Номер телефона</label>
+        <input type="number" id="phone" placeholder="79991234567">
+    </div>
+    <div class="input-group">
+        <label>Текст сообщения</label>
+        <textarea id="sms_text" rows="4" placeholder="Введите текст или выберите шаблон"></textarea>
+    </div>
+    <div class="input-group">
+        <label>Количество отправок</label>
+        <select id="quantity">
+            <option value="1">1 SMS</option>
+            <option value="5">5 SMS</option>
+            <option value="10">10 SMS</option>
+        </select>
+    </div>
+    <button class="main-btn" onclick="sendOrder()">Заказать рассылку</button>
+</div>
+
+<!-- Секция Магазин -->
+<div id="shop" class="section">
+    <h3>Купить готовые шаблоны</h3>
+    <div class="template-card">
+        <strong>Категория: Банки</strong>
+        <p>Доступно: 15 шт.</p>
+        <button class="main-btn" style="padding: 8px;" onclick="buyTemplate('banks')">Смотреть</button>
+    </div>
+    <div class="template-card">
+        <strong>Категория: Сервисы</strong>
+        <p>Доступно: 8 шт.</p>
+        <button class="main-btn" style="padding: 8px;" onclick="buyTemplate('services')">Смотреть</button>
+    </div>
+</div>
+
+<!-- Секция Профиль -->
+<div id="profile" class="section">
+    <div class="template-card">
+        <p><strong>ID:</strong> <span id="uid"></span></p>
+        <p><strong>Регистрация:</strong> <span id="reg_date">17.05.2024</span></p>
+    </div>
+    <button class="main-btn" onclick="topUp()">Пополнить баланс</button>
+    <button class="main-btn" style="background: #e74c3c;" onclick="tg.close()">Выход</button>
+</div>
+
+<script>
+    let tg = window.Telegram.WebApp;
+    tg.expand(); // Расширить на весь экран
+
+    // Инициализация данных пользователя
+    document.getElementById('user-info').innerText = `Привет, ${tg.initDataUnsafe.user?.first_name || 'Пользователь'}!`;
+    document.getElementById('uid').innerText = tg.initDataUnsafe.user?.id || 'Неизвестно';
+
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    function sendOrder() {
+        const phone = document.getElementById('phone').value;
+        const text = document.getElementById('sms_text').value;
+        const qty = document.getElementById('quantity').value;
+
+        if (!phone || !text) {
+            tg.showAlert("Пожалуйста, заполните все поля!");
+            return;
+        }
+
+        const data = {
+            action: 'send_sms',
+            phone: phone,
+            text: text,
+            qty: qty
+        };
+
+        tg.sendData(JSON.stringify(data)); // Отправляем данные боту
+    }
+
+    function buyTemplate(cat) {
+        tg.sendData(JSON.stringify({action: 'open_shop', category: cat}));
+    }
+
+    function topUp() {
+        tg.sendData(JSON.stringify({action: 'top_up'}));
+    }
+</script>
+
+</body>
+</html>

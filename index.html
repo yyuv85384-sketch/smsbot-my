@@ -6,7 +6,6 @@
     <title>SMS Sender | Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Сброс и базовые стили */
         * {
             margin: 0;
             padding: 0;
@@ -20,13 +19,10 @@
             color: var(--tg-theme-text-color, #000000);
             height: 100vh;
             overflow: hidden;
-            position: fixed;
             width: 100%;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
         
-        /* Основной контейнер */
         .app-container {
             height: 100vh;
             display: flex;
@@ -34,11 +30,10 @@
             overflow: hidden;
         }
         
-        /* Шапка приложения */
         .app-header {
             padding: 16px;
             background: var(--tg-theme-bg-color, #ffffff);
-            border-bottom: 0.5px solid var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
             position: relative;
             z-index: 10;
         }
@@ -50,27 +45,24 @@
             color: var(--tg-theme-text-color, #000000);
         }
         
-        /* Основной контент */
         .main-content {
             flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             padding: 16px;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
         }
         
         .main-content::-webkit-scrollbar {
             display: none;
         }
         
-        /* Блок профиля */
         .profile-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
             color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
         }
         
         .user-greeting {
@@ -103,10 +95,6 @@
         .balance-amount {
             font-size: 32px;
             font-weight: 700;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 4px;
         }
         
         .balance-unit {
@@ -115,7 +103,6 @@
             font-weight: 500;
         }
         
-        /* Навигация */
         .nav-tabs {
             display: flex;
             background: var(--tg-theme-secondary-bg-color, #f0f0f0);
@@ -141,7 +128,6 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
         
-        /* Контент вкладок */
         .tab-content {
             display: none;
         }
@@ -150,7 +136,6 @@
             display: block;
         }
         
-        /* Карточки форм */
         .form-card {
             background: var(--tg-theme-secondary-bg-color, #f0f0f0);
             border-radius: 12px;
@@ -185,11 +170,10 @@
             font-size: 16px;
             color: var(--tg-theme-text-color, #000000);
             outline: none;
-            transition: border-color 0.2s;
         }
         
         .input-field:focus {
-            border-color: var(--tg-theme-link-color, #007AFF);
+            border-color: #007AFF;
         }
         
         .textarea-field {
@@ -198,7 +182,6 @@
             font-family: inherit;
         }
         
-        /* Счетчики */
         .counter-row {
             display: flex;
             justify-content: space-between;
@@ -214,10 +197,9 @@
         .counter-value {
             font-size: 14px;
             font-weight: 500;
-            color: var(--tg-theme-link-color, #007AFF);
+            color: #007AFF;
         }
         
-        /* SMS счетчик */
         .sms-counter {
             background: var(--tg-theme-secondary-bg-color, #f0f0f0);
             border-radius: 12px;
@@ -237,21 +219,20 @@
         .sms-value {
             font-size: 18px;
             font-weight: 600;
-            color: var(--tg-theme-link-color, #007AFF);
+            color: #007AFF;
         }
         
-        /* Кнопки */
         .primary-button {
             width: 100%;
-            background: var(--tg-theme-button-color, #007AFF);
-            color: var(--tg-theme-button-text-color, #ffffff);
+            background: #007AFF;
+            color: white;
             border: none;
             border-radius: 12px;
             padding: 16px;
             font-size: 17px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: opacity 0.2s;
             margin-top: 8px;
             display: flex;
             justify-content: center;
@@ -265,7 +246,6 @@
         
         .primary-button:active {
             opacity: 0.8;
-            transform: scale(0.98);
         }
         
         .primary-button:disabled {
@@ -277,7 +257,6 @@
             font-size: 20px;
         }
         
-        /* Пополнение баланса */
         .topup-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -296,11 +275,11 @@
         }
         
         .topup-option:hover {
-            border-color: var(--tg-theme-link-color, #007AFF);
+            border-color: #007AFF;
         }
         
         .topup-option.selected {
-            border-color: var(--tg-theme-link-color, #007AFF);
+            border-color: #007AFF;
             background: rgba(0, 122, 255, 0.05);
         }
         
@@ -316,7 +295,6 @@
             color: var(--tg-theme-hint-color, #8E8E93);
         }
         
-        /* Информация профиля */
         .info-card {
             background: var(--tg-theme-secondary-bg-color, #f0f0f0);
             border-radius: 12px;
@@ -346,7 +324,6 @@
             color: var(--tg-theme-text-color, #000000);
         }
         
-        /* Выход */
         .logout-button {
             width: 100%;
             background: #FF3B30;
@@ -366,7 +343,6 @@
             opacity: 0.9;
         }
         
-        /* Уведомление */
         .notification {
             position: fixed;
             top: 20px;
@@ -379,7 +355,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             z-index: 1000;
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             max-width: 90%;
             text-align: center;
             font-weight: 500;
@@ -391,7 +367,6 @@
             transform: translateX(-50%) translateY(0);
         }
         
-        /* Загрузка */
         .loading {
             display: inline-block;
             width: 20px;
@@ -406,20 +381,37 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Адаптация под темную тему */
-        @media (prefers-color-scheme: dark) {
-            .profile-section {
-                background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-            }
-            
-            .topup-option {
-                background: var(--tg-theme-secondary-bg-color, #1c1c1e);
-                border-color: rgba(255, 255, 255, 0.1);
-            }
+        .payment-status {
+            text-align: center;
+            padding: 12px;
+            margin: 16px 0;
+            border-radius: 12px;
+            font-weight: 500;
+            display: none;
         }
         
-        /* Кнопка фиксированная внизу */
-        .fixed-button-container {
+        .payment-status.success {
+            background: rgba(52, 199, 89, 0.1);
+            color: #34C759;
+            border: 1px solid rgba(52, 199, 89, 0.2);
+            display: block;
+        }
+        
+        .payment-status.error {
+            background: rgba(255, 59, 48, 0.1);
+            color: #FF3B30;
+            border: 1px solid rgba(255, 59, 48, 0.2);
+            display: block;
+        }
+        
+        .payment-status.info {
+            background: rgba(0, 122, 255, 0.1);
+            color: #007AFF;
+            border: 1px solid rgba(0, 122, 255, 0.2);
+            display: block;
+        }
+        
+        .fixed-bottom {
             position: fixed;
             bottom: 0;
             left: 0;
@@ -433,15 +425,12 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Шапка -->
         <div class="app-header">
             <h1 class="header-title" id="pageTitle">Профиль</h1>
         </div>
         
-        <!-- Основной контент -->
         <div class="main-content" id="mainContent">
-            <!-- Профиль пользователя -->
-            <div class="profile-section" id="profileSection">
+            <div class="profile-section">
                 <div class="user-greeting" id="userGreeting">Привет, венри | монарх!</div>
                 <div class="user-role">Администратор системы</div>
                 
@@ -454,14 +443,12 @@
                 </div>
             </div>
             
-            <!-- Навигация -->
             <div class="nav-tabs">
                 <div class="nav-tab active" data-tab="profile">ПРОФИЛЬ</div>
                 <div class="nav-tab" data-tab="sms">SMS</div>
                 <div class="nav-tab" data-tab="shop">МАГАЗИН</div>
             </div>
             
-            <!-- Вкладка Профиль -->
             <div id="profileTab" class="tab-content active">
                 <div class="info-card">
                     <div class="info-row">
@@ -474,6 +461,8 @@
                     </div>
                 </div>
                 
+                <div class="payment-status" id="paymentStatus"></div>
+                
                 <button class="primary-button" id="topupButton">
                     <span class="button-icon">💳</span>
                     <span>Пополнить баланс</span>
@@ -484,9 +473,7 @@
                 </button>
             </div>
             
-            <!-- Вкладка SMS -->
             <div id="smsTab" class="tab-content">
-                <!-- Форма отправки SMS -->
                 <div class="form-card">
                     <div class="input-group">
                         <label class="input-label">Номер телефона клиента</label>
@@ -508,23 +495,22 @@
                     </div>
                 </div>
                 
-                <!-- Счетчик SMS -->
                 <div class="sms-counter">
                     <span class="sms-label">Количество SMS</span>
                     <span class="sms-value" id="smsCount">1 SMS</span>
                 </div>
                 
-                <!-- Кнопка отправки -->
                 <button class="primary-button" id="sendSmsButton">
                     <span class="button-icon">📨</span>
                     <span>Заказать отправку SMS</span>
                 </button>
             </div>
             
-            <!-- Вкладка Магазин -->
             <div id="shopTab" class="tab-content">
+                <div class="payment-status" id="shopPaymentStatus"></div>
+                
                 <div class="topup-grid">
-                    <div class="topup-option" data-amount="10" data-price="100">
+                    <div class="topup-option selected" data-amount="10" data-price="100">
                         <div class="topup-amount">10 SMS</div>
                         <div class="topup-price">100 RUB</div>
                     </div>
@@ -552,7 +538,6 @@
             </div>
         </div>
         
-        <!-- Уведомление -->
         <div class="notification" id="notification"></div>
     </div>
 
@@ -564,7 +549,6 @@
         const API_URL = `https://api.telegram.org/bot${BOT_TOKEN}`;
         // ====================
         
-        // Telegram Web App
         const tg = window.Telegram.WebApp;
         
         // DOM элементы
@@ -573,6 +557,8 @@
         const balanceAmount = document.getElementById('balanceAmount');
         const userId = document.getElementById('userId');
         const regDate = document.getElementById('regDate');
+        const paymentStatus = document.getElementById('paymentStatus');
+        const shopPaymentStatus = document.getElementById('shopPaymentStatus');
         const notification = document.getElementById('notification');
         
         // Навигация
@@ -597,61 +583,42 @@
         const buyButton = document.getElementById('buyButton');
         const logoutButton = document.getElementById('logoutButton');
         
-        // Состояние приложения
+        // Состояние
         let userBalance = 0;
         let selectedTopupAmount = 10;
         let selectedTopupPrice = 100;
         let userData = {};
+        let paymentInProgress = false;
         
         // Инициализация
         async function init() {
-            // Telegram WebApp
             tg.expand();
             tg.ready();
-            
-            // Применяем тему
             applyTheme();
-            
-            // Загружаем данные пользователя
             await loadUserData();
-            
-            // Настраиваем обработчики
             setupEventListeners();
-            
-            // Инициализируем SMS форму
             initSmsForm();
             
-            // Показываем приветствие
             setTimeout(() => {
-                showNotification(`Добро пожаловать, ${userData.first_name || 'Пользователь'}!`);
+                showNotification(`Добро пожаловать! Ваш баланс: ${userBalance} SMS`);
             }, 500);
         }
         
-        // Применение темы
         function applyTheme() {
-            const themeParams = tg.themeParams || {};
-            
-            document.documentElement.style.setProperty('--tg-theme-bg-color', themeParams.bg_color || '#ffffff');
-            document.documentElement.style.setProperty('--tg-theme-text-color', themeParams.text_color || '#000000');
-            document.documentElement.style.setProperty('--tg-theme-hint-color', themeParams.hint_color || '#999999');
-            document.documentElement.style.setProperty('--tg-theme-link-color', themeParams.link_color || '#007AFF');
-            document.documentElement.style.setProperty('--tg-theme-button-color', themeParams.button_color || '#007AFF');
-            document.documentElement.style.setProperty('--tg-theme-button-text-color', themeParams.button_text_color || '#ffffff');
-            document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', themeParams.secondary_bg_color || '#f0f0f0');
+            const theme = tg.themeParams || {};
+            document.documentElement.style.setProperty('--tg-theme-bg-color', theme.bg_color || '#ffffff');
+            document.documentElement.style.setProperty('--tg-theme-text-color', theme.text_color || '#000000');
+            document.documentElement.style.setProperty('--tg-theme-hint-color', theme.hint_color || '#8E8E93');
+            document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', theme.secondary_bg_color || '#f0f0f0');
         }
         
-        // Загрузка данных пользователя
         async function loadUserData() {
             try {
-                // Получаем данные из Telegram
                 if (tg.initDataUnsafe.user) {
                     userData = tg.initDataUnsafe.user;
-                    
-                    // Обновляем интерфейс
                     updateUserProfile();
                 }
                 
-                // Загружаем баланс из localStorage
                 const savedBalance = localStorage.getItem('userBalance');
                 if (savedBalance) {
                     userBalance = parseInt(savedBalance);
@@ -660,7 +627,6 @@
                     localStorage.setItem('userBalance', '0');
                 }
                 
-                // Загружаем данные профиля
                 const savedUserId = localStorage.getItem('userId');
                 const savedRegDate = localStorage.getItem('regDate');
                 
@@ -680,44 +646,30 @@
                     regDate.textContent = today;
                 }
                 
-                // Обновляем баланс
                 updateBalance();
                 
             } catch (error) {
-                console.error('Ошибка загрузки данных:', error);
+                console.error('Ошибка загрузки:', error);
                 showNotification('Ошибка загрузки данных', 'error');
             }
         }
         
-        // Обновление профиля пользователя
         function updateUserProfile() {
             if (userData.first_name) {
                 let greeting = `Привет, ${userData.first_name}`;
-                if (userData.last_name) {
-                    greeting += ` ${userData.last_name}`;
-                }
-                
-                // Добавляем роль если есть username
-                if (userData.username) {
-                    greeting += ` | ${userData.username}`;
-                }
-                
+                if (userData.last_name) greeting += ` ${userData.last_name}`;
+                if (userData.username) greeting += ` | ${userData.username}`;
                 userGreeting.textContent = greeting;
             }
         }
         
-        // Настройка обработчиков
         function setupEventListeners() {
-            // Навигация
             navTabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     const tabName = tab.dataset.tab;
-                    
-                    // Обновляем активный таб
                     navTabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
                     
-                    // Показываем нужный контент
                     Object.values(tabContents).forEach(content => {
                         content.classList.remove('active');
                     });
@@ -726,59 +678,41 @@
                         tabContents[tabName].classList.add('active');
                     }
                     
-                    // Обновляем заголовок
                     pageTitle.textContent = getPageTitle(tabName);
                 });
             });
             
-            // Выбор пакета пополнения
             topupOptions.forEach(option => {
                 option.addEventListener('click', () => {
+                    if (paymentInProgress) return;
                     topupOptions.forEach(opt => opt.classList.remove('selected'));
                     option.classList.add('selected');
-                    
                     selectedTopupAmount = parseInt(option.dataset.amount);
                     selectedTopupPrice = parseInt(option.dataset.price);
                 });
             });
             
-            // Пополнение баланса
             topupButton.addEventListener('click', () => {
-                // Переключаемся на вкладку магазина
                 navTabs.forEach(t => t.classList.remove('active'));
                 navTabs[2].classList.add('active');
-                
                 Object.values(tabContents).forEach(content => {
                     content.classList.remove('active');
                 });
                 tabContents.shop.classList.add('active');
-                
                 pageTitle.textContent = 'Магазин';
             });
             
-            // Покупка через Crypto Pay
             buyButton.addEventListener('click', createCryptoPayment);
-            
-            // Выход
             logoutButton.addEventListener('click', handleLogout);
-            
-            // Выбираем первый пакет по умолчанию
-            if (topupOptions.length > 0) {
-                topupOptions[0].classList.add('selected');
-            }
         }
         
-        // Инициализация SMS формы
         function initSmsForm() {
             messageInput.addEventListener('input', () => {
                 const length = messageInput.value.length;
                 charCount.textContent = `${length}/500`;
-                
-                // Расчет количества SMS
                 const smsCountValue = calculateSmsCount(length);
                 smsCount.textContent = `${smsCountValue} SMS`;
                 
-                // Подсветка при приближении к лимиту
                 if (length > 400) {
                     charCount.style.color = '#FF3B30';
                 } else {
@@ -789,13 +723,11 @@
             sendSmsButton.addEventListener('click', sendSms);
         }
         
-        // Отправка SMS
         async function sendSms() {
             const phone = phoneInput.value.trim();
             const clientName = clientNameInput.value.trim();
             const message = messageInput.value.trim();
             
-            // Валидация
             if (!phone) {
                 showNotification('Введите номер телефона', 'error');
                 return;
@@ -811,17 +743,14 @@
                 return;
             }
             
-            // Расчет стоимости
             const cost = calculateSmsCount(message.length);
             
-            // Проверка баланса
             if (userBalance < cost) {
                 showNotification(`Недостаточно SMS. Нужно: ${cost}, доступно: ${userBalance}`, 'error');
                 return;
             }
             
-            // Подтверждение
-            const confirmText = `Отправить SMS на ${formatPhone(phone)}?\nСтоимость: ${cost} SMS\nБаланс после отправки: ${userBalance - cost} SMS`;
+            const confirmText = `Отправить SMS на ${formatPhone(phone)}?\nСтоимость: ${cost} SMS`;
             
             if (tg.showConfirm) {
                 tg.showConfirm(confirmText, async (confirmed) => {
@@ -836,34 +765,27 @@
             }
         }
         
-        // Процесс отправки SMS
         async function processSmsSending(phone, clientName, message, cost) {
             sendSmsButton.disabled = true;
             sendSmsButton.innerHTML = '<div class="loading"></div>';
             
             try {
-                // Создаем заказ
-                const orderId = Date.now();
                 const order = {
-                    id: orderId,
+                    id: Date.now(),
                     phone: phone,
                     clientName: clientName || 'Не указано',
                     message: message,
                     cost: cost,
-                    timestamp: new Date().toLocaleString('ru-RU'),
-                    status: 'pending'
+                    timestamp: new Date().toLocaleString('ru-RU')
                 };
                 
-                // Отправляем в группу Telegram
                 const success = await sendToTelegramGroup(order);
                 
                 if (success) {
-                    // Списание с баланса
                     userBalance -= cost;
                     localStorage.setItem('userBalance', userBalance.toString());
                     updateBalance();
                     
-                    // Очистка формы
                     phoneInput.value = '';
                     clientNameInput.value = '';
                     messageInput.value = '';
@@ -872,7 +794,6 @@
                     
                     showNotification(`SMS отправлено! Списано ${cost} SMS`, 'success');
                     
-                    // Вибрация
                     if (tg.HapticFeedback) {
                         tg.HapticFeedback.impactOccurred('medium');
                     }
@@ -889,84 +810,192 @@
             }
         }
         
-        // Создание платежа через Crypto Pay
+        // ОСНОВНАЯ ФУНКЦИЯ ДЛЯ CRYPTO PAY
         async function createCryptoPayment() {
+            if (paymentInProgress) return;
+            
+            paymentInProgress = true;
+            buyButton.disabled = true;
+            buyButton.innerHTML = '<div class="loading"></div>';
+            showPaymentStatus('Создание счета...', 'info', 'shop');
+            
             try {
-                buyButton.disabled = true;
-                buyButton.innerHTML = '<div class="loading"></div>';
+                // 1. Создаем счет в Crypto Pay
+                const invoiceUrl = await createCryptoPayInvoice();
                 
-                // Создаем инвойс через Crypto Pay
-                const invoiceResponse = await fetch('https://api.cryptobot.click/api/v1/createInvoice', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Crypto-Pay-API-Token': CRYPTO_PAY_TOKEN
-                    },
-                    body: JSON.stringify({
-                        asset: 'USDT',
-                        amount: selectedTopupPrice.toString(),
-                        description: `Пополнение баланса на ${selectedTopupAmount} SMS`,
-                        paid_btn_name: 'callback',
-                        paid_btn_url: `https://t.me/${BOT_TOKEN.split(':')[0]}`,
-                        payload: JSON.stringify({
-                            userId: userData.id || userId.textContent,
-                            amount: selectedTopupAmount,
-                            price: selectedTopupPrice
-                        })
-                    })
-                });
-                
-                const invoiceData = await invoiceResponse.json();
-                
-                if (invoiceData.ok && invoiceData.result) {
-                    // Открываем инвойс в Telegram
-                    tg.openInvoice(invoiceData.result.invoice_url, (status) => {
-                        if (status === 'paid') {
-                            // Пополняем баланс
-                            userBalance += selectedTopupAmount;
-                            localStorage.setItem('userBalance', userBalance.toString());
-                            updateBalance();
-                            
-                            showNotification(`Баланс пополнен на ${selectedTopupAmount} SMS!`, 'success');
-                            
-                            if (tg.HapticFeedback) {
-                                tg.HapticFeedback.impactOccurred('heavy');
-                            }
+                // 2. Открываем счет в Telegram
+                tg.openInvoice(invoiceUrl, async (status) => {
+                    console.log('Crypto Pay статус:', status);
+                    
+                    if (status === 'paid') {
+                        // Оплата прошла успешно
+                        showPaymentStatus('✅ Оплата подтверждена!', 'success', 'shop');
+                        
+                        // Пополняем баланс
+                        userBalance += selectedTopupAmount;
+                        localStorage.setItem('userBalance', userBalance.toString());
+                        updateBalance();
+                        
+                        // Отправляем уведомление в группу
+                        await sendPaymentConfirmation();
+                        
+                        // Вибрация
+                        if (tg.HapticFeedback) {
+                            tg.HapticFeedback.impactOccurred('heavy');
                         }
-                    });
-                } else {
-                    // Fallback: имитация оплаты для демо
-                    simulatePayment();
-                }
+                        
+                        // Показываем уведомление
+                        showNotification(`Баланс пополнен на ${selectedTopupAmount} SMS!`);
+                        
+                        // Возвращаемся в профиль через 3 секунды
+                        setTimeout(() => {
+                            navTabs.forEach(t => t.classList.remove('active'));
+                            navTabs[0].classList.add('active');
+                            Object.values(tabContents).forEach(content => {
+                                content.classList.remove('active');
+                            });
+                            tabContents.profile.classList.add('active');
+                            pageTitle.textContent = 'Профиль';
+                            showPaymentStatus('', 'success', 'shop');
+                        }, 3000);
+                        
+                    } else if (status === 'failed' || status === 'cancelled') {
+                        showPaymentStatus('❌ Оплата отменена', 'error', 'shop');
+                        setTimeout(() => showPaymentStatus('', 'error', 'shop'), 3000);
+                    } else {
+                        showPaymentStatus('⚠️ Статус оплаты неизвестен', 'error', 'shop');
+                        setTimeout(() => showPaymentStatus('', 'error', 'shop'), 3000);
+                    }
+                });
                 
             } catch (error) {
                 console.error('Ошибка Crypto Pay:', error);
-                // Fallback
-                simulatePayment();
+                showPaymentStatus(`❌ Ошибка: ${error.message}`, 'error', 'shop');
+                
+                // Демо-режим для тестирования
+                showNotification('Используется демо-режим для тестирования');
+                setTimeout(() => {
+                    simulatePayment();
+                }, 2000);
+                
             } finally {
+                paymentInProgress = false;
                 buyButton.disabled = false;
                 buyButton.innerHTML = '<span class="button-icon">🛒</span><span>Купить через Crypto Pay</span>';
             }
         }
         
-        // Имитация оплаты (для демо)
+        // Создание инвойса в Crypto Pay
+        async function createCryptoPayInvoice() {
+            const payload = {
+                userId: userData.id || userId.textContent,
+                amount: selectedTopupAmount,
+                price: selectedTopupPrice,
+                timestamp: Date.now(),
+                product: `${selectedTopupAmount} SMS`
+            };
+            
+            // Пробуем разные варианты API endpoints
+            const endpoints = [
+                'https://pay.crypt.bot/api/createInvoice',
+                'https://api.cryptobot.click/api/v1/createInvoice',
+                'https://api.crypt.bot/api/createInvoice'
+            ];
+            
+            let lastError;
+            
+            for (const endpoint of endpoints) {
+                try {
+                    console.log('Пробуем endpoint:', endpoint);
+                    
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Crypto-Pay-API-Token': CRYPTO_PAY_TOKEN
+                        },
+                        body: JSON.stringify({
+                            asset: 'USDT',
+                            amount: (selectedTopupPrice / 100).toFixed(2), // Переводим в доллары
+                            description: `Пополнение баланса на ${selectedTopupAmount} SMS`,
+                            paid_btn_name: 'viewItem',
+                            paid_btn_url: `https://t.me/${BOT_TOKEN.split(':')[0]}`,
+                            payload: JSON.stringify(payload),
+                            allow_comments: false,
+                            expires_in: 3600
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    console.log('Crypto Pay ответ:', data);
+                    
+                    if (data.ok && data.result) {
+                        return data.result.invoice_url || data.result.bot_invoice_url;
+                    } else {
+                        throw new Error(data.error || 'Unknown error');
+                    }
+                    
+                } catch (error) {
+                    lastError = error;
+                    console.warn(`Endpoint ${endpoint} не сработал:`, error.message);
+                    continue;
+                }
+            }
+            
+            // Если все endpoints не сработали, используем демо-режим
+            throw new Error(`Все endpoints не сработали. Последняя ошибка: ${lastError?.message}`);
+        }
+        
+        // Демо-режим оплаты
         function simulatePayment() {
-            showNotification('Имитация оплаты...', 'info');
+            showPaymentStatus('Демо-режим: имитация оплаты...', 'info', 'shop');
             
             setTimeout(() => {
                 userBalance += selectedTopupAmount;
                 localStorage.setItem('userBalance', userBalance.toString());
                 updateBalance();
                 
-                showNotification(`Баланс пополнен на ${selectedTopupAmount} SMS!`, 'success');
+                showPaymentStatus('✅ Демо: баланс пополнен!', 'success', 'shop');
+                showNotification(`Демо: баланс пополнен на ${selectedTopupAmount} SMS`);
                 
                 if (tg.HapticFeedback) {
                     tg.HapticFeedback.impactOccurred('heavy');
                 }
+                
+                setTimeout(() => {
+                    showPaymentStatus('', 'success', 'shop');
+                }, 3000);
             }, 2000);
         }
         
-        // Отправка в Telegram группу
+        async function sendPaymentConfirmation() {
+            const messageText = `
+💰 *НОВАЯ ОПЛАТА*
+
+👤 *Пользователь:* ${userData.first_name || 'Unknown'} (ID: ${userData.id || userId.textContent})
+💎 *Пакет:* ${selectedTopupAmount} SMS
+💵 *Сумма:* ${selectedTopupPrice} RUB
+⏰ *Время:* ${new Date().toLocaleString('ru-RU')}
+📊 *Новый баланс:* ${userBalance} SMS
+            `.trim();
+            
+            try {
+                await fetch(`${API_URL}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_GROUP_ID,
+                        text: messageText,
+                        parse_mode: 'Markdown'
+                    })
+                });
+            } catch (error) {
+                console.error('Ошибка отправки подтверждения:', error);
+            }
+        }
+        
         async function sendToTelegramGroup(order) {
             const messageText = `
 📱 *НОВЫЙ ЗАКАЗ SMS*
@@ -983,7 +1012,7 @@ ${order.message}
 • Время: ${order.timestamp}
 • ID заказа: ${order.id}
 
-👨 *Отправитель:* ${userData.first_name || 'Пользователь'} ${userData.id ? `(ID: ${userData.id})` : ''}
+👨 *Отправитель:* ${userData.first_name || 'Пользователь'} (ID: ${userData.id || 'неизвестен'})
             `.trim();
             
             try {
@@ -1008,7 +1037,6 @@ ${order.message}
             }
         }
         
-        // Выход из приложения
         function handleLogout() {
             if (tg.showConfirm) {
                 tg.showConfirm('Вы уверены, что хотите выйти?', (confirmed) => {
@@ -1026,8 +1054,6 @@ ${order.message}
         // Вспомогательные функции
         function updateBalance() {
             balanceAmount.textContent = userBalance;
-            
-            // Сохраняем в localStorage для демо
             localStorage.setItem('userBalance', userBalance.toString());
         }
         
@@ -1078,7 +1104,19 @@ ${order.message}
             }, 3000);
         }
         
-        // Инициализация при загрузке
+        function showPaymentStatus(text, type, tab = 'profile') {
+            const statusElement = tab === 'shop' ? shopPaymentStatus : paymentStatus;
+            statusElement.textContent = text;
+            statusElement.className = `payment-status ${type}`;
+            
+            if (!text) {
+                statusElement.style.display = 'none';
+            } else {
+                statusElement.style.display = 'block';
+            }
+        }
+        
+        // Инициализация
         document.addEventListener('DOMContentLoaded', init);
         
         // Заглушка для тестирования вне Telegram
@@ -1104,6 +1142,7 @@ ${order.message}
                     },
                     openInvoice: (url, callback) => {
                         console.log('Opening invoice:', url);
+                        // Демо-имитация успешной оплаты через 2 секунды
                         setTimeout(() => {
                             callback('paid');
                         }, 2000);
@@ -1114,6 +1153,12 @@ ${order.message}
                     close: () => console.log('App closed')
                 }
             };
+            
+            // В демо-режиме показываем тестовый баланс
+            setTimeout(() => {
+                userBalance = 50;
+                updateBalance();
+            }, 1000);
         }
     </script>
 </body>

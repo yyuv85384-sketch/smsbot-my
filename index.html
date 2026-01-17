@@ -811,7 +811,6 @@
         }
         
         // ОСНОВНАЯ ФУНКЦИЯ ДЛЯ CRYPTO PAY
-        async function createCryptoPayment() {
             if (paymentInProgress) return;
             
             paymentInProgress = true;
@@ -868,15 +867,6 @@
                     }
                 });
                 
-            } catch (error) {
-                console.error('Ошибка Crypto Pay:', error);
-                showPaymentStatus(`❌ Ошибка: ${error.message}`, 'error', 'shop');
-                
-                // Демо-режим для тестирования
-                showNotification('Используется демо-режим для тестирования');
-                setTimeout(() => {
-                    simulatePayment();
-                }, 2000);
                 
             } finally {
                 paymentInProgress = false;
@@ -946,9 +936,6 @@
             throw new Error(`Все endpoints не сработали. Последняя ошибка: ${lastError?.message}`);
         }
         
-        // Демо-режим оплаты
-        function simulatePayment() {
-            showPaymentStatus('Демо-режим: имитация оплаты...', 'info', 'shop');
             
             setTimeout(() => {
                 userBalance += selectedTopupAmount;
@@ -1156,8 +1143,7 @@ ${order.message}
             
             // В демо-режиме показываем тестовый баланс
             setTimeout(() => {
-                userBalance = 50;
-                updateBalance();
+                
             }, 1000);
         }
     </script>

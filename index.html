@@ -7,39 +7,32 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --bg-color: #ffffff;
-            --text-color: #000000;
-            --hint-color: #999999;
-            --button-color: #248bcf;
-            --button-text: #ffffff;
-            --secondary-bg: #f4f4f4;
+        * {
+            box-sizing: border-box;
         }
-
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: #ffffff;
+            color: #000000;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         /* Header */
         header {
             padding: 20px;
             text-align: center;
-            background: var(--secondary-bg);
+            background: #f4f4f4;
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         .balance-card {
-            background: linear-gradient(135deg, var(--button-color), #54a9eb);
+            background: linear-gradient(135deg, #248bcf, #54a9eb);
             color: white;
             padding: 20px;
             border-radius: 15px;
@@ -53,7 +46,7 @@
         .tabs {
             display: flex;
             justify-content: space-around;
-            background: var(--secondary-bg);
+            background: #f4f4f4;
             padding: 10px 0;
             position: sticky;
             top: 0;
@@ -63,7 +56,7 @@
         .tab-btn {
             background: none;
             border: none;
-            color: var(--hint-color);
+            color: #999999;
             font-weight: bold;
             padding: 10px;
             cursor: pointer;
@@ -71,24 +64,18 @@
         }
 
         .tab-btn.active {
-            color: var(--button-color);
-            border-bottom: 2px solid var(--button-color);
+            color: #248bcf;
+            border-bottom: 2px solid #248bcf;
         }
 
         /* Content Sections */
         .section {
             display: none;
             padding: 20px;
-            animation: fadeIn 0.3s ease;
         }
 
         .section.active { 
             display: block; 
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Form styling */
@@ -99,7 +86,7 @@
         label { 
             display: block; 
             margin-bottom: 5px; 
-            color: var(--hint-color); 
+            color: #666666; 
             font-size: 14px; 
         }
         
@@ -107,10 +94,9 @@
             width: 100%;
             padding: 12px;
             border-radius: 10px;
-            border: 1px solid var(--secondary-bg);
-            background: var(--secondary-bg);
-            color: var(--text-color);
-            box-sizing: border-box;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            color: #000000;
             font-size: 16px;
             font-family: inherit;
         }
@@ -121,8 +107,8 @@
         }
 
         .main-btn {
-            background-color: var(--button-color);
-            color: var(--button-text);
+            background-color: #248bcf;
+            color: white;
             border: none;
             padding: 15px;
             width: 100%;
@@ -131,7 +117,11 @@
             font-size: 16px;
             margin-top: 10px;
             cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
+            transition: background-color 0.2s;
+        }
+
+        .main-btn:hover {
+            background-color: #1a7bb9;
         }
 
         .main-btn:active { 
@@ -144,21 +134,16 @@
         }
 
         .template-card {
-            background: var(--secondary-bg);
+            background: #f9f9f9;
             padding: 15px;
             border-radius: 12px;
             margin-bottom: 10px;
-            border: 1px solid transparent;
-            transition: border-color 0.2s;
-        }
-        
-        .template-card:hover { 
-            border-color: var(--button-color); 
+            border: 1px solid #eee;
         }
 
         .small-btn {
-            background-color: var(--button-color);
-            color: var(--button-text);
+            background-color: #248bcf;
+            color: white;
             border: none;
             padding: 8px 12px;
             border-radius: 8px;
@@ -209,9 +194,25 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #248bcf;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            max-width: 300px;
+            display: none;
+        }
     </style>
 </head>
 <body>
+
+<div id="notification" class="notification"></div>
 
 <header>
     <div id="user-info" style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">Добро пожаловать!</div>
@@ -222,9 +223,6 @@
         </div>
         <i class="fas fa-wallet fa-2x"></i>
     </div>
-    <button class="small-btn" onclick="getBalance()" style="margin-top: 10px; width: auto;">
-        <i class="fas fa-sync-alt"></i> Обновить
-    </button>
 </header>
 
 <div class="tabs">
@@ -244,13 +242,11 @@
     <h3><i class="fas fa-paper-plane"></i> Отправить сообщение</h3>
     <div class="input-group">
         <label for="phone"><i class="fas fa-phone"></i> Номер телефона</label>
-        <input type="tel" id="phone" placeholder="79991234567" inputmode="numeric" pattern="[0-9]*">
-        <small style="color: var(--hint-color); font-size: 12px;">Только цифры, без пробелов и символов</small>
+        <input type="tel" id="phone" placeholder="79991234567" inputmode="numeric">
     </div>
     <div class="input-group">
         <label for="sms_text"><i class="fas fa-comment"></i> Текст сообщения</label>
         <textarea id="sms_text" rows="4" placeholder="Введите текст SMS сообщения..."></textarea>
-        <small style="color: var(--hint-color); font-size: 12px;">Максимум 1000 символов</small>
     </div>
     <div class="input-group">
         <label for="quantity"><i class="fas fa-hashtag"></i> Количество отправок</label>
@@ -263,7 +259,7 @@
         </select>
     </div>
     <button class="main-btn" onclick="sendOrder()" id="send-btn">
-        <i class="fas fa-paper-plane"></i> Заказать рассылку
+        <i class="fas fa-paper-plane"></i> Отправить SMS
     </button>
     <div id="sms-status" class="status-message"></div>
 </div>
@@ -271,11 +267,11 @@
 <!-- Секция Магазин -->
 <div id="shop" class="section">
     <h3><i class="fas fa-store"></i> Магазин шаблонов</h3>
-    <p style="color: var(--hint-color); margin-bottom: 15px;">Выберите категорию шаблонов для покупки:</p>
+    <p style="color: #666; margin-bottom: 15px;">Выберите категорию шаблонов:</p>
     
     <div class="template-card">
         <strong><i class="fas fa-university"></i> Банки</strong>
-        <p style="font-size: 14px; color: var(--hint-color); margin: 5px 0;">Готовые шаблоны для банковских рассылок</p>
+        <p style="font-size: 14px; color: #666; margin: 5px 0;">Готовые шаблоны для банковских рассылок</p>
         <button class="small-btn" onclick="openShopCategory('Банки')">
             <i class="fas fa-eye"></i> Смотреть шаблоны
         </button>
@@ -283,7 +279,7 @@
     
     <div class="template-card">
         <strong><i class="fas fa-concierge-bell"></i> Сервисы</strong>
-        <p style="font-size: 14px; color: var(--hint-color); margin: 5px 0;">Шаблоны для сервисных сообщений</p>
+        <p style="font-size: 14px; color: #666; margin: 5px 0;">Шаблоны для сервисных сообщений</p>
         <button class="small-btn" onclick="openShopCategory('Сервисы')">
             <i class="fas fa-eye"></i> Смотреть шаблоны
         </button>
@@ -291,7 +287,7 @@
     
     <div class="template-card">
         <strong><i class="fas fa-shopping-cart"></i> Маркетинг</strong>
-        <p style="font-size: 14px; color: var(--hint-color); margin: 5px 0;">Промо-сообщения для маркетинга</p>
+        <p style="font-size: 14px; color: #666; margin: 5px 0;">Промо-сообщения для маркетинга</p>
         <button class="small-btn" onclick="openShopCategory('Маркетинг')">
             <i class="fas fa-eye"></i> Смотреть шаблоны
         </button>
@@ -299,7 +295,7 @@
     
     <div class="template-card">
         <strong><i class="fas fa-info-circle"></i> Информационные</strong>
-        <p style="font-size: 14px; color: var(--hint-color); margin: 5px 0;">Информационные и уведомительные шаблоны</p>
+        <p style="font-size: 14px; color: #666; margin: 5px 0;">Информационные и уведомительные шаблоны</p>
         <button class="small-btn" onclick="openShopCategory('Информационные')">
             <i class="fas fa-eye"></i> Смотреть шаблоны
         </button>
@@ -313,7 +309,7 @@
     <div class="template-card">
         <p><strong><i class="fas fa-id-card"></i> ID:</strong> <span id="uid">Загрузка...</span></p>
         <p><strong><i class="fas fa-user"></i> Имя:</strong> <span id="user-name">Загрузка...</span></p>
-        <p><strong><i class="fas fa-calendar-alt"></i> Регистрация:</strong> <span id="reg-date">Неизвестно</span></p>
+        <p><strong><i class="fas fa-wallet"></i> Баланс:</strong> <span id="balance-text">0 SMS</span></p>
     </div>
     
     <button class="main-btn" onclick="topUp()" id="topup-btn">
@@ -328,116 +324,95 @@
         <i class="fas fa-headset"></i> Поддержка
     </button>
     
-    <button class="main-btn" style="background: #e74c3c;" onclick="closeApp()">
-        <i class="fas fa-sign-out-alt"></i> Закрыть Mini App
-    </button>
-    
     <div id="profile-status" class="status-message"></div>
 </div>
 
 <script>
-    // Инициализация Telegram WebApp
-    let tg = window.Telegram?.WebApp;
+    // Telegram WebApp API
+    const tg = window.Telegram.WebApp;
     
-    // Проверяем, запущено ли в Telegram
-    if (!tg) {
-        // Если не в Telegram, показываем заглушку
-        document.body.innerHTML = `
-            <div style="padding: 20px; text-align: center;">
-                <h2>⚠️ Приложение должно быть запущено в Telegram</h2>
-                <p>Откройте это приложение через бота в Telegram</p>
-            </div>
-        `;
-        throw new Error('Not in Telegram');
-    }
-    
-    // Инициализируем приложение
+    // Инициализация
     tg.ready();
     tg.expand();
     
-    // Данные пользователя из Telegram
-    const user = tg.initDataUnsafe?.user || {};
-    const userId = user.id || 'Неизвестно';
-    const userName = user.first_name || 'Пользователь';
-    const userLastName = user.last_name || '';
-    const userFullName = userLastName ? `${userName} ${userLastName}` : userName;
-    
-    // Обновляем UI
-    document.getElementById('user-info').textContent = `Привет, ${userName}!`;
-    document.getElementById('uid').textContent = userId;
-    document.getElementById('user-name').textContent = userFullName;
+    // Данные пользователя
+    const user = tg.initDataUnsafe.user;
+    document.getElementById('user-info').textContent = `Привет, ${user?.first_name || 'Пользователь'}!`;
+    document.getElementById('uid').textContent = user?.id || 'Неизвестно';
+    document.getElementById('user-name').textContent = user?.first_name || 'Неизвестно';
     
     // Функции
-    function showSection(id) {
-        // Скрываем все секции
-        document.querySelectorAll('.section').forEach(s => {
-            s.classList.remove('active');
+    function showSection(sectionId) {
+        // Скрыть все секции
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.remove('active');
         });
         
-        // Убираем активный класс со всех кнопок
-        document.querySelectorAll('.tab-btn').forEach(b => {
-            b.classList.remove('active');
+        // Убрать активный класс со всех кнопок
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
         });
         
-        // Показываем выбранную секцию
-        const section = document.getElementById(id);
-        if (section) {
-            section.classList.add('active');
-        }
+        // Показать выбранную секцию
+        document.getElementById(sectionId).classList.add('active');
         
-        // Делаем кнопку активной
+        // Найти и активировать соответствующую кнопку
         const buttons = document.querySelectorAll('.tab-btn');
         buttons.forEach(btn => {
-            if (btn.onclick && btn.onclick.toString().includes(id)) {
+            if (btn.textContent.includes(getTabName(sectionId))) {
                 btn.classList.add('active');
             }
         });
-        
-        // Обновляем баланс при переключении
-        if (id === 'profile') {
-            setTimeout(getBalance, 300);
+    }
+    
+    function getTabName(sectionId) {
+        switch(sectionId) {
+            case 'sms': return 'SMS';
+            case 'shop': return 'МАГАЗИН';
+            case 'profile': return 'ПРОФИЛЬ';
+            default: return '';
         }
     }
     
-    function showStatus(elementId, type, message) {
-        const element = document.getElementById(elementId);
-        if (!element) return;
+    function showNotification(message, type = 'info') {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.style.display = 'block';
+        notification.style.background = type === 'success' ? '#2ecc71' : 
+                                      type === 'error' ? '#e74c3c' : 
+                                      type === 'warning' ? '#f39c12' : '#248bcf';
         
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 3000);
+    }
+    
+    function showStatus(elementId, message, type = 'info') {
+        const element = document.getElementById(elementId);
         element.textContent = message;
         element.className = `status-message ${type}`;
         element.style.display = 'block';
         
-        // Автоскрытие через 5 секунд (кроме успешных сообщений о заказе)
-        if (type !== 'success' || message.includes('ожидайте')) {
-            setTimeout(() => {
-                element.style.display = 'none';
-            }, 5000);
-        }
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, 5000);
     }
     
-    function validatePhone(phone) {
-        return /^[0-9]{7,15}$/.test(phone);
-    }
-    
-    function sendOrder() {
+    // Отправка SMS
+    async function sendOrder() {
         const phone = document.getElementById('phone').value.trim();
         const text = document.getElementById('sms_text').value.trim();
-        const qty = document.getElementById('quantity').value;
+        const quantity = document.getElementById('quantity').value;
         const sendBtn = document.getElementById('send-btn');
         
         // Валидация
         if (!phone || !text) {
-            showStatus('sms-status', 'error', 'Пожалуйста, заполните все поля!');
+            showStatus('sms-status', 'Заполните все поля!', 'error');
             return;
         }
         
-        if (!validatePhone(phone)) {
-            showStatus('sms-status', 'error', 'Введите корректный номер телефона (7-15 цифр)');
-            return;
-        }
-        
-        if (text.length > 1000) {
-            showStatus('sms-status', 'error', 'Текст слишком длинный (максимум 1000 символов)');
+        if (!/^\d{7,15}$/.test(phone)) {
+            showStatus('sms-status', 'Некорректный номер телефона', 'error');
             return;
         }
         
@@ -445,123 +420,106 @@
         sendBtn.disabled = true;
         sendBtn.innerHTML = '<i class="fas fa-spinner loading"></i> Отправка...';
         
+        // Отправляем данные в бота
         const data = {
             action: 'send_sms',
             phone: phone,
             text: text,
-            qty: parseInt(qty)
+            qty: parseInt(quantity)
         };
         
-        showStatus('sms-status', 'warning', 'Отправка заказа...');
-        
-        // Отправляем данные в бота
         tg.sendData(JSON.stringify(data));
         
-        // Сброс формы через 2 секунды
+        // Показываем уведомление
+        showNotification('✅ Заказ отправлен! Проверьте чат с ботом.', 'success');
+        
+        // Очищаем форму через 1 секунду
         setTimeout(() => {
             document.getElementById('phone').value = '';
             document.getElementById('sms_text').value = '';
             sendBtn.disabled = false;
-            sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Заказать рассылку';
-            showStatus('sms-status', 'success', '✅ Заказ отправлен! Ожидайте подтверждения в чате с ботом.');
-        }, 2000);
+            sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить SMS';
+        }, 1000);
     }
     
+    // Открыть магазин шаблонов
     function openShopCategory(category) {
         const data = {
             action: 'open_shop',
             category: category
         };
         
-        showStatus('shop-status', 'warning', `Загружаем категорию "${category}"...`);
-        
         tg.sendData(JSON.stringify(data));
+        showNotification(`📋 Открываем категорию "${category}"...`, 'info');
         
+        // Через секунду показываем подсказку
         setTimeout(() => {
-            showStatus('shop-status', 'info', `Категория "${category}" открыта. Перейдите в чат с ботом для выбора шаблонов.`);
+            showNotification('Перейдите в чат с ботом для выбора шаблонов', 'info');
         }, 1000);
     }
     
+    // Пополнение баланса
     function topUp() {
-        const topupBtn = document.getElementById('topup-btn');
-        topupBtn.disabled = true;
-        topupBtn.innerHTML = '<i class="fas fa-spinner loading"></i> Открываем...';
-        
         const data = {
             action: 'top_up'
         };
         
-        showStatus('profile-status', 'warning', 'Открываем пополнение баланса...');
-        
         tg.sendData(JSON.stringify(data));
+        showNotification('💳 Открываем пополнение баланса...', 'info');
         
         setTimeout(() => {
-            topupBtn.disabled = false;
-            topupBtn.innerHTML = '<i class="fas fa-coins"></i> Пополнить баланс';
-            showStatus('profile-status', 'info', 'Перейдите в чат с ботом для пополнения баланса');
-        }, 1500);
+            showNotification('Перейдите в чат с ботом для пополнения', 'info');
+        }, 1000);
     }
     
+    // Получить баланс
     function getBalance() {
         const data = {
             action: 'get_balance'
         };
         
+        tg.sendData(JSON.stringify(data));
+        
+        // Показываем обновление баланса
         const balanceEl = document.getElementById('user-balance');
+        const balanceText = document.getElementById('balance-text');
         balanceEl.innerHTML = '<i class="fas fa-spinner loading"></i>';
         
-        tg.sendData(JSON.stringify(data));
-        
-        // Обновляем баланс через 3 секунды (имитация)
         setTimeout(() => {
+            showNotification('Баланс обновлен! Проверьте чат с ботом.', 'success');
             balanceEl.textContent = '...';
-        }, 3000);
-    }
-    
-    function openSupport() {
-        // Открываем диалог с поддержкой
-        const data = {
-            action: 'support'
-        };
-        
-        showStatus('profile-status', 'info', 'Открываем поддержку...');
-        
-        tg.sendData(JSON.stringify(data));
-        
-        // Временно показываем сообщение
-        setTimeout(() => {
-            showStatus('profile-status', 'info', 'Напишите администратору в чате с ботом');
+            balanceText.textContent = '... SMS';
         }, 1000);
     }
     
-    function closeApp() {
-        tg.close();
+    // Поддержка
+    function openSupport() {
+        showNotification('Напишите @администратору в чате с ботом', 'info');
+        
+        // Можно открыть диалог с поддержкой
+        setTimeout(() => {
+            const data = {
+                action: 'support'
+            };
+            tg.sendData(JSON.stringify(data));
+        }, 500);
     }
     
-    // Инициализация при загрузке
-    document.addEventListener('DOMContentLoaded', function() {
-        // Проверяем наличие необходимых элементов
-        if (!tg) {
-            console.error('Telegram WebApp не инициализирован');
-            return;
-        }
-        
-        // Устанавливаем начальный баланс
-        getBalance();
-        
-        // Устанавливаем текущую дату как дату регистрации (временно)
-        const now = new Date();
-        document.getElementById('reg-date').textContent = now.toLocaleDateString('ru-RU');
-        
-        console.log('Mini App успешно загружен');
-        console.log('Пользователь:', user);
+    // Обработка сообщений от бота (если бот будет отправлять обратно)
+    tg.onEvent('webAppDataReceived', function(event) {
+        console.log('Данные от бота:', event);
+        // Здесь можно обработать ответ от бота
     });
     
-    // Обработка закрытия приложения
-    window.addEventListener('beforeunload', function() {
-        console.log('Mini App закрывается');
+    // При загрузке обновляем баланс
+    window.addEventListener('load', function() {
+        // Обновляем баланс каждые 30 секунд
+        setInterval(getBalance, 30000);
+        
+        // Первоначальное обновление баланса
+        setTimeout(getBalance, 1000);
     });
 </script>
 
 </body>
-</html>
+    </html>

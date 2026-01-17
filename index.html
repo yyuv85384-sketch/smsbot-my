@@ -15,8 +15,8 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
+            background: #ffffff;
+            color: #000000;
             height: 100vh;
             overflow: hidden;
             width: 100%;
@@ -32,17 +32,15 @@
         
         .app-header {
             padding: 16px;
-            background: var(--tg-theme-bg-color, #ffffff);
-            border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
-            position: relative;
-            z-index: 10;
+            background: #ffffff;
+            border-bottom: 0.5px solid #f0f0f0;
         }
         
         .header-title {
             font-size: 20px;
             font-weight: 700;
             text-align: center;
-            color: var(--tg-theme-text-color, #000000);
+            color: #000000;
         }
         
         .main-content {
@@ -105,10 +103,11 @@
         
         .nav-tabs {
             display: flex;
-            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            background: #f0f0f0;
             border-radius: 12px;
             padding: 4px;
             margin-bottom: 20px;
+            overflow-x: auto;
         }
         
         .nav-tab {
@@ -118,13 +117,14 @@
             border-radius: 8px;
             font-weight: 600;
             font-size: 15px;
-            color: var(--tg-theme-text-color, #000000);
+            color: #000000;
             cursor: pointer;
-            transition: all 0.2s;
+            white-space: nowrap;
+            min-width: 80px;
         }
         
         .nav-tab.active {
-            background: var(--tg-theme-bg-color, #ffffff);
+            background: #ffffff;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
         
@@ -137,7 +137,7 @@
         }
         
         .form-card {
-            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            background: #f0f0f0;
             border-radius: 12px;
             padding: 0;
             margin-bottom: 16px;
@@ -157,18 +157,18 @@
             display: block;
             font-size: 14px;
             font-weight: 500;
-            color: var(--tg-theme-text-color, #000000);
+            color: #000000;
             margin-bottom: 8px;
         }
         
         .input-field {
             width: 100%;
-            background: var(--tg-theme-bg-color, #ffffff);
+            background: #ffffff;
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             padding: 12px 16px;
             font-size: 16px;
-            color: var(--tg-theme-text-color, #000000);
+            color: #000000;
             outline: none;
         }
         
@@ -191,7 +191,7 @@
         
         .counter-label {
             font-size: 14px;
-            color: var(--tg-theme-hint-color, #8E8E93);
+            color: #8E8E93;
         }
         
         .counter-value {
@@ -201,7 +201,7 @@
         }
         
         .sms-counter {
-            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            background: #f0f0f0;
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 20px;
@@ -213,7 +213,7 @@
         .sms-label {
             font-size: 16px;
             font-weight: 500;
-            color: var(--tg-theme-text-color, #000000);
+            color: #000000;
         }
         
         .sms-value {
@@ -265,8 +265,8 @@
         }
         
         .topup-option {
-            background: var(--tg-theme-bg-color, #ffffff);
-            border: 2px solid var(--tg-theme-secondary-bg-color, #f0f0f0);
+            background: #ffffff;
+            border: 2px solid #f0f0f0;
             border-radius: 12px;
             padding: 16px;
             text-align: center;
@@ -286,17 +286,17 @@
         .topup-amount {
             font-size: 20px;
             font-weight: 700;
-            color: var(--tg-theme-text-color, #000000);
+            color: #000000;
             margin-bottom: 4px;
         }
         
         .topup-price {
             font-size: 14px;
-            color: var(--tg-theme-hint-color, #8E8E93);
+            color: #8E8E93;
         }
         
         .info-card {
-            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            background: #f0f0f0;
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 16px;
@@ -315,13 +315,13 @@
         
         .info-label {
             font-size: 14px;
-            color: var(--tg-theme-hint-color, #8E8E93);
+            color: #8E8E93;
         }
         
         .info-value {
             font-size: 14px;
             font-weight: 500;
-            color: var(--tg-theme-text-color, #000000);
+            color: #000000;
         }
         
         .logout-button {
@@ -348,8 +348,8 @@
             top: 20px;
             left: 50%;
             transform: translateX(-50%) translateY(-20px);
-            background: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
+            background: #ffffff;
+            color: #000000;
             padding: 12px 20px;
             border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -411,15 +411,91 @@
             display: block;
         }
         
-        .fixed-bottom {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+        .history-list {
+            list-style: none;
+        }
+        
+        .history-item {
+            background: #ffffff;
+            border-radius: 12px;
             padding: 16px;
-            background: var(--tg-theme-bg-color, #ffffff);
-            border-top: 0.5px solid var(--tg-theme-secondary-bg-color, #f0f0f0);
-            z-index: 100;
+            margin-bottom: 12px;
+            border-left: 4px solid #007AFF;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .history-phone {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .history-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: rgba(255, 149, 0, 0.1);
+            color: #FF9500;
+        }
+        
+        .status-sent {
+            background: rgba(52, 199, 89, 0.1);
+            color: #34C759;
+        }
+        
+        .status-cancelled {
+            background: rgba(255, 59, 48, 0.1);
+            color: #FF3B30;
+        }
+        
+        .history-message {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+        
+        .history-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #8E8E93;
+        }
+        
+        .history-cost {
+            font-weight: 600;
+        }
+        
+        .empty-history {
+            text-align: center;
+            padding: 40px 20px;
+            color: #8E8E93;
+            font-size: 16px;
+        }
+        
+        .error-message {
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            color: #FF3B30;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
         }
     </style>
 </head>
@@ -431,8 +507,8 @@
         
         <div class="main-content" id="mainContent">
             <div class="profile-section">
-                <div class="user-greeting" id="userGreeting">Привет, венри | монарх!</div>
-                <div class="user-role">Администратор системы</div>
+                <div class="user-greeting" id="userGreeting">Загрузка...</div>
+                <div class="user-role" id="userRole">Загрузка...</div>
                 
                 <div class="balance-card">
                     <div class="balance-label">Ваш баланс</div>
@@ -443,25 +519,35 @@
                 </div>
             </div>
             
+            <div class="error-message" id="errorMessage"></div>
+            
             <div class="nav-tabs">
                 <div class="nav-tab active" data-tab="profile">ПРОФИЛЬ</div>
                 <div class="nav-tab" data-tab="sms">SMS</div>
+                <div class="nav-tab" data-tab="history">ИСТОРИЯ</div>
                 <div class="nav-tab" data-tab="shop">МАГАЗИН</div>
             </div>
             
+            <!-- Вкладка Профиль -->
             <div id="profileTab" class="tab-content active">
                 <div class="info-card">
                     <div class="info-row">
-                        <span class="info-label">ID:</span>
-                        <span class="info-value" id="userId">8155919358</span>
+                        <span class="info-label">Telegram ID:</span>
+                        <span class="info-value" id="telegramId">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Имя пользователя:</span>
+                        <span class="info-value" id="username">—</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Регистрация:</span>
-                        <span class="info-value" id="regDate">17.05.2024</span>
+                        <span class="info-value" id="regDate">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Всего отправок:</span>
+                        <span class="info-value" id="totalSent">0</span>
                     </div>
                 </div>
-                
-                <div class="payment-status" id="paymentStatus"></div>
                 
                 <button class="primary-button" id="topupButton">
                     <span class="button-icon">💳</span>
@@ -473,11 +559,12 @@
                 </button>
             </div>
             
+            <!-- Вкладка SMS -->
             <div id="smsTab" class="tab-content">
                 <div class="form-card">
                     <div class="input-group">
                         <label class="input-label">Номер телефона клиента</label>
-                        <input type="tel" class="input-field" id="phoneNumber" placeholder="89526586644">
+                        <input type="tel" class="input-field" id="phoneNumber" placeholder="79991234567">
                     </div>
                     
                     <div class="input-group">
@@ -506,18 +593,21 @@
                 </button>
             </div>
             
+            <!-- Вкладка История -->
+            <div id="historyTab" class="tab-content">
+                <div class="history-list" id="historyList">
+                    <!-- История будет загружена здесь -->
+                </div>
+            </div>
+            
+            <!-- Вкладка Магазин -->
             <div id="shopTab" class="tab-content">
                 <div class="payment-status" id="shopPaymentStatus"></div>
                 
                 <div class="topup-grid">
-                    <div class="topup-option selected" data-amount="10" data-price="100">
-                        <div class="topup-amount">10 SMS</div>
-                        <div class="topup-price">100 RUB</div>
-                    </div>
-                    
-                    <div class="topup-option" data-amount="50" data-price="450">
-                        <div class="topup-amount">50 SMS</div>
-                        <div class="topup-price">450 RUB</div>
+                    <div class="topup-option selected" data-amount="30" data-price="300">
+                        <div class="topup-amount">30 SMS</div>
+                        <div class="topup-price">300 RUB</div>
                     </div>
                     
                     <div class="topup-option" data-amount="100" data-price="800">
@@ -528,6 +618,11 @@
                     <div class="topup-option" data-amount="200" data-price="1500">
                         <div class="topup-amount">200 SMS</div>
                         <div class="topup-price">1500 RUB</div>
+                    </div>
+                    
+                    <div class="topup-option" data-amount="500" data-price="3500">
+                        <div class="topup-amount">500 SMS</div>
+                        <div class="topup-price">3500 RUB</div>
                     </div>
                 </div>
                 
@@ -547,18 +642,20 @@
         const CRYPTO_PAY_TOKEN = '506281:AA6VIryyUOtSljJhv9w1lr349E3idG6aIiN';
         const TELEGRAM_GROUP_ID = '-5100107384';
         const API_URL = `https://api.telegram.org/bot${BOT_TOKEN}`;
-        // ====================
+        const SERVER_URL = 'https://ваш-сервер.com/api'; // Замените на ваш сервер
         
         const tg = window.Telegram.WebApp;
         
         // DOM элементы
         const pageTitle = document.getElementById('pageTitle');
         const userGreeting = document.getElementById('userGreeting');
+        const userRole = document.getElementById('userRole');
         const balanceAmount = document.getElementById('balanceAmount');
-        const userId = document.getElementById('userId');
+        const telegramId = document.getElementById('telegramId');
+        const username = document.getElementById('username');
         const regDate = document.getElementById('regDate');
-        const paymentStatus = document.getElementById('paymentStatus');
-        const shopPaymentStatus = document.getElementById('shopPaymentStatus');
+        const totalSent = document.getElementById('totalSent');
+        const errorMessage = document.getElementById('errorMessage');
         const notification = document.getElementById('notification');
         
         // Навигация
@@ -566,6 +663,7 @@
         const tabContents = {
             profile: document.getElementById('profileTab'),
             sms: document.getElementById('smsTab'),
+            history: document.getElementById('historyTab'),
             shop: document.getElementById('shopTab')
         };
         
@@ -583,86 +681,115 @@
         const buyButton = document.getElementById('buyButton');
         const logoutButton = document.getElementById('logoutButton');
         
+        // История
+        const historyList = document.getElementById('historyList');
+        
         // Состояние
         let userBalance = 0;
-        let selectedTopupAmount = 10;
-        let selectedTopupPrice = 100;
+        let selectedTopupAmount = 30;
+        let selectedTopupPrice = 300;
         let userData = {};
+        let userProfile = {};
         let paymentInProgress = false;
+        let userHistory = [];
         
         // Инициализация
         async function init() {
             tg.expand();
             tg.ready();
-            applyTheme();
-            await loadUserData();
+            
+            if (!tg.initDataUnsafe.user) {
+                showError('Не удалось получить данные пользователя');
+                return;
+            }
+            
+            userData = tg.initDataUnsafe.user;
+            await loadUserProfile();
             setupEventListeners();
             initSmsForm();
             
-            setTimeout(() => {
-                showNotification(`Добро пожаловать! Ваш баланс: ${userBalance} SMS`);
-            }, 500);
+            showNotification(`Добро пожаловать, ${userProfile.name || 'Пользователь'}!`);
         }
         
-        function applyTheme() {
-            const theme = tg.themeParams || {};
-            document.documentElement.style.setProperty('--tg-theme-bg-color', theme.bg_color || '#ffffff');
-            document.documentElement.style.setProperty('--tg-theme-text-color', theme.text_color || '#000000');
-            document.documentElement.style.setProperty('--tg-theme-hint-color', theme.hint_color || '#8E8E93');
-            document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', theme.secondary_bg_color || '#f0f0f0');
-        }
-        
-        async function loadUserData() {
+        // Загрузка профиля пользователя с сервера
+        async function loadUserProfile() {
             try {
-                if (tg.initDataUnsafe.user) {
-                    userData = tg.initDataUnsafe.user;
-                    updateUserProfile();
+                // Отправляем запрос на сервер для получения/создания профиля
+                const response = await fetch(`${SERVER_URL}/user`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        telegram_id: userData.id,
+                        first_name: userData.first_name,
+                        last_name: userData.last_name,
+                        username: userData.username,
+                        language_code: userData.language_code
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка сервера');
                 }
                 
-                const savedBalance = localStorage.getItem('userBalance');
-                if (savedBalance) {
-                    userBalance = parseInt(savedBalance);
-                } else {
-                    userBalance = 0;
-                    localStorage.setItem('userBalance', '0');
-                }
+                const data = await response.json();
+                userProfile = data.user;
                 
-                const savedUserId = localStorage.getItem('userId');
-                const savedRegDate = localStorage.getItem('regDate');
+                // Обновляем интерфейс
+                updateUserInterface();
                 
-                if (savedUserId) {
-                    userId.textContent = savedUserId;
-                } else {
-                    const newUserId = generateUserId();
-                    localStorage.setItem('userId', newUserId);
-                    userId.textContent = newUserId;
-                }
-                
-                if (savedRegDate) {
-                    regDate.textContent = savedRegDate;
-                } else {
-                    const today = new Date().toLocaleDateString('ru-RU');
-                    localStorage.setItem('regDate', today);
-                    regDate.textContent = today;
-                }
-                
-                updateBalance();
+                // Загружаем историю
+                await loadUserHistory();
                 
             } catch (error) {
-                console.error('Ошибка загрузки:', error);
-                showNotification('Ошибка загрузки данных', 'error');
+                console.error('Ошибка загрузки профиля:', error);
+                // Используем локальные данные как fallback
+                userProfile = {
+                    id: userData.id,
+                    name: userData.first_name || 'Пользователь',
+                    username: userData.username || '—',
+                    balance: 0,
+                    registration_date: new Date().toISOString(),
+                    total_sent: 0
+                };
+                updateUserInterface();
             }
         }
         
-        function updateUserProfile() {
-            if (userData.first_name) {
-                let greeting = `Привет, ${userData.first_name}`;
-                if (userData.last_name) greeting += ` ${userData.last_name}`;
-                if (userData.username) greeting += ` | ${userData.username}`;
-                userGreeting.textContent = greeting;
+        // Обновление интерфейса пользователя
+        function updateUserInterface() {
+            userGreeting.textContent = `Привет, ${userProfile.name}!`;
+            userRole.textContent = `Баланс: ${userProfile.balance || 0} SMS`;
+            balanceAmount.textContent = userProfile.balance || 0;
+            telegramId.textContent = userProfile.id || '—';
+            username.textContent = userProfile.username || '—';
+            totalSent.textContent = userProfile.total_sent || 0;
+            
+            if (userProfile.registration_date) {
+                const date = new Date(userProfile.registration_date);
+                regDate.textContent = date.toLocaleDateString('ru-RU');
+            }
+            
+            userBalance = userProfile.balance || 0;
+        }
+        
+        // Загрузка истории пользователя
+        async function loadUserHistory() {
+            try {
+                const response = await fetch(`${SERVER_URL}/history/${userData.id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    userHistory = data.history || [];
+                    renderHistory();
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки истории:', error);
+                userHistory = [];
             }
         }
         
+        // Настройка обработчиков
         function setupEventListeners() {
             navTabs.forEach(tab => {
                 tab.addEventListener('click', () => {
@@ -679,6 +806,10 @@
                     }
                     
                     pageTitle.textContent = getPageTitle(tabName);
+                    
+                    if (tabName === 'history') {
+                        renderHistory();
+                    }
                 });
             });
             
@@ -694,7 +825,7 @@
             
             topupButton.addEventListener('click', () => {
                 navTabs.forEach(t => t.classList.remove('active'));
-                navTabs[2].classList.add('active');
+                navTabs[3].classList.add('active');
                 Object.values(tabContents).forEach(content => {
                     content.classList.remove('active');
                 });
@@ -750,55 +881,53 @@
                 return;
             }
             
-            const confirmText = `Отправить SMS на ${formatPhone(phone)}?\nСтоимость: ${cost} SMS`;
-            
-            if (tg.showConfirm) {
-                tg.showConfirm(confirmText, async (confirmed) => {
-                    if (confirmed) {
-                        await processSmsSending(phone, clientName, message, cost);
-                    }
-                });
-            } else {
-                if (confirm(confirmText)) {
-                    await processSmsSending(phone, clientName, message, cost);
-                }
-            }
-        }
-        
-        async function processSmsSending(phone, clientName, message, cost) {
             sendSmsButton.disabled = true;
             sendSmsButton.innerHTML = '<div class="loading"></div>';
             
             try {
+                const orderId = Date.now();
                 const order = {
-                    id: Date.now(),
+                    id: orderId,
+                    user_id: userData.id,
                     phone: phone,
-                    clientName: clientName || 'Не указано',
+                    client_name: clientName || 'Не указано',
                     message: message,
                     cost: cost,
-                    timestamp: new Date().toLocaleString('ru-RU')
+                    status: 'pending',
+                    created_at: new Date().toISOString()
                 };
                 
+                // Сохраняем заказ в историю
+                userHistory.unshift(order);
+                renderHistory();
+                
+                // Отправляем в группу Telegram
                 const success = await sendToTelegramGroup(order);
                 
                 if (success) {
-                    userBalance -= cost;
-                    localStorage.setItem('userBalance', userBalance.toString());
-                    updateBalance();
+                    // Обновляем баланс на сервере
+                    await updateUserBalance(-cost);
                     
+                    // Обновляем интерфейс
+                    userBalance -= cost;
+                    balanceAmount.textContent = userBalance;
+                    
+                    // Очищаем форму
                     phoneInput.value = '';
                     clientNameInput.value = '';
                     messageInput.value = '';
                     charCount.textContent = '0/500';
                     smsCount.textContent = '1 SMS';
                     
-                    showNotification(`SMS отправлено! Списано ${cost} SMS`, 'success');
+                    showNotification(`Заказ создан! Списано ${cost} SMS`, 'success');
                     
                     if (tg.HapticFeedback) {
                         tg.HapticFeedback.impactOccurred('medium');
                     }
                 } else {
-                    showNotification('Ошибка при отправке в группу', 'error');
+                    showNotification('Ошибка при отправке заказа', 'error');
+                    order.status = 'failed';
+                    renderHistory();
                 }
                 
             } catch (error) {
@@ -810,43 +939,67 @@
             }
         }
         
-        // ОСНОВНАЯ ФУНКЦИЯ ДЛЯ CRYPTO PAY
+        async function createCryptoPayment() {
             if (paymentInProgress) return;
             
             paymentInProgress = true;
             buyButton.disabled = true;
             buyButton.innerHTML = '<div class="loading"></div>';
-            showPaymentStatus('Создание счета...', 'info', 'shop');
             
             try {
-                // 1. Создаем счет в Crypto Pay
-                const invoiceUrl = await createCryptoPayInvoice();
+                // Создаем инвойс через Crypto Pay
+                const response = await fetch('https://pay.crypt.bot/api/createInvoice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Crypto-Pay-API-Token': CRYPTO_PAY_TOKEN
+                    },
+                    body: JSON.stringify({
+                        asset: 'USDT',
+                        amount: (selectedTopupPrice / 100).toFixed(2),
+                        description: `Пополнение баланса на ${selectedTopupAmount} SMS`,
+                        hidden_message: `Пользователь: ${userData.first_name} (ID: ${userData.id})`,
+                        paid_btn_name: 'viewItem',
+                        paid_btn_url: `https://t.me/${BOT_TOKEN.split(':')[0]}`,
+                        payload: JSON.stringify({
+                            user_id: userData.id,
+                            amount: selectedTopupAmount,
+                            price: selectedTopupPrice,
+                            timestamp: Date.now()
+                        }),
+                        allow_comments: false,
+                        expires_in: 3600
+                    })
+                });
                 
-                // 2. Открываем счет в Telegram
+                const data = await response.json();
+                
+                if (!data.ok) {
+                    throw new Error(data.error || 'Ошибка Crypto Pay');
+                }
+                
+                const invoiceUrl = data.result.invoice_url;
+                
+                // Открываем инвойс в Telegram
                 tg.openInvoice(invoiceUrl, async (status) => {
-                    console.log('Crypto Pay статус:', status);
-                    
                     if (status === 'paid') {
-                        // Оплата прошла успешно
-                        showPaymentStatus('✅ Оплата подтверждена!', 'success', 'shop');
+                        // Обновляем баланс на сервере
+                        await updateUserBalance(selectedTopupAmount);
                         
-                        // Пополняем баланс
+                        // Обновляем интерфейс
                         userBalance += selectedTopupAmount;
-                        localStorage.setItem('userBalance', userBalance.toString());
-                        updateBalance();
+                        balanceAmount.textContent = userBalance;
+                        
+                        showNotification(`Баланс пополнен на ${selectedTopupAmount} SMS!`, 'success');
                         
                         // Отправляем уведомление в группу
                         await sendPaymentConfirmation();
                         
-                        // Вибрация
                         if (tg.HapticFeedback) {
                             tg.HapticFeedback.impactOccurred('heavy');
                         }
                         
-                        // Показываем уведомление
-                        showNotification(`Баланс пополнен на ${selectedTopupAmount} SMS!`);
-                        
-                        // Возвращаемся в профиль через 3 секунды
+                        // Переключаемся на профиль
                         setTimeout(() => {
                             navTabs.forEach(t => t.classList.remove('active'));
                             navTabs[0].classList.add('active');
@@ -855,19 +1008,16 @@
                             });
                             tabContents.profile.classList.add('active');
                             pageTitle.textContent = 'Профиль';
-                            showPaymentStatus('', 'success', 'shop');
-                        }, 3000);
+                        }, 2000);
                         
                     } else if (status === 'failed' || status === 'cancelled') {
-                        showPaymentStatus('❌ Оплата отменена', 'error', 'shop');
-                        setTimeout(() => showPaymentStatus('', 'error', 'shop'), 3000);
-                    } else {
-                        showPaymentStatus('⚠️ Статус оплаты неизвестен', 'error', 'shop');
-                        setTimeout(() => showPaymentStatus('', 'error', 'shop'), 3000);
+                        showNotification('Оплата отменена', 'error');
                     }
                 });
                 
-                
+            } catch (error) {
+                console.error('Ошибка Crypto Pay:', error);
+                showError(`Ошибка Crypto Pay: ${error.message}`);
             } finally {
                 paymentInProgress = false;
                 buyButton.disabled = false;
@@ -875,91 +1025,35 @@
             }
         }
         
-        // Создание инвойса в Crypto Pay
-        async function createCryptoPayInvoice() {
-            const payload = {
-                userId: userData.id || userId.textContent,
-                amount: selectedTopupAmount,
-                price: selectedTopupPrice,
-                timestamp: Date.now(),
-                product: `${selectedTopupAmount} SMS`
-            };
-            
-            // Пробуем разные варианты API endpoints
-            const endpoints = [
-                'https://pay.crypt.bot/api/createInvoice',
-                'https://api.cryptobot.click/api/v1/createInvoice',
-                'https://api.crypt.bot/api/createInvoice'
-            ];
-            
-            let lastError;
-            
-            for (const endpoint of endpoints) {
-                try {
-                    console.log('Пробуем endpoint:', endpoint);
-                    
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Crypto-Pay-API-Token': CRYPTO_PAY_TOKEN
-                        },
-                        body: JSON.stringify({
-                            asset: 'USDT',
-                            amount: (selectedTopupPrice / 100).toFixed(2), // Переводим в доллары
-                            description: `Пополнение баланса на ${selectedTopupAmount} SMS`,
-                            paid_btn_name: 'viewItem',
-                            paid_btn_url: `https://t.me/${BOT_TOKEN.split(':')[0]}`,
-                            payload: JSON.stringify(payload),
-                            allow_comments: false,
-                            expires_in: 3600
-                        })
-                    });
-                    
+        async function updateUserBalance(change) {
+            try {
+                const response = await fetch(`${SERVER_URL}/balance`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: userData.id,
+                        change: change
+                    })
+                });
+                
+                if (response.ok) {
                     const data = await response.json();
-                    console.log('Crypto Pay ответ:', data);
-                    
-                    if (data.ok && data.result) {
-                        return data.result.invoice_url || data.result.bot_invoice_url;
-                    } else {
-                        throw new Error(data.error || 'Unknown error');
-                    }
-                    
-                } catch (error) {
-                    lastError = error;
-                    console.warn(`Endpoint ${endpoint} не сработал:`, error.message);
-                    continue;
+                    userProfile.balance = data.balance;
+                    userBalance = data.balance;
+                    balanceAmount.textContent = data.balance;
                 }
+            } catch (error) {
+                console.error('Ошибка обновления баланса:', error);
             }
-            
-            // Если все endpoints не сработали, используем демо-режим
-            throw new Error(`Все endpoints не сработали. Последняя ошибка: ${lastError?.message}`);
-        }
-        
-            
-            setTimeout(() => {
-                userBalance += selectedTopupAmount;
-                localStorage.setItem('userBalance', userBalance.toString());
-                updateBalance();
-                
-                showPaymentStatus('✅ Демо: баланс пополнен!', 'success', 'shop');
-                showNotification(`Демо: баланс пополнен на ${selectedTopupAmount} SMS`);
-                
-                if (tg.HapticFeedback) {
-                    tg.HapticFeedback.impactOccurred('heavy');
-                }
-                
-                setTimeout(() => {
-                    showPaymentStatus('', 'success', 'shop');
-                }, 3000);
-            }, 2000);
         }
         
         async function sendPaymentConfirmation() {
             const messageText = `
 💰 *НОВАЯ ОПЛАТА*
 
-👤 *Пользователь:* ${userData.first_name || 'Unknown'} (ID: ${userData.id || userId.textContent})
+👤 *Пользователь:* ${userData.first_name || 'Неизвестно'} (ID: ${userData.id})
 💎 *Пакет:* ${selectedTopupAmount} SMS
 💵 *Сумма:* ${selectedTopupPrice} RUB
 ⏰ *Время:* ${new Date().toLocaleString('ru-RU')}
@@ -985,9 +1079,9 @@
         
         async function sendToTelegramGroup(order) {
             const messageText = `
-📱 *НОВЫЙ ЗАКАЗ SMS*
+📱 *НОВЫЙ ЗАКАЗ SMS* (ID: ${order.id})
 
-👤 *Клиент:* ${order.clientName}
+👤 *Клиент:* ${order.client_name}
 📞 *Телефон:* \`${formatPhone(order.phone)}\`
 
 💬 *Сообщение:*
@@ -996,10 +1090,12 @@ ${order.message}
 📊 *Детали:*
 • Длина: ${order.message.length} символов
 • SMS: ${order.cost} шт.
-• Время: ${order.timestamp}
-• ID заказа: ${order.id}
+• Время: ${new Date(order.created_at).toLocaleString('ru-RU')}
 
-👨 *Отправитель:* ${userData.first_name || 'Пользователь'} (ID: ${userData.id || 'неизвестен'})
+👨 *Отправитель:* ${userData.first_name} (ID: ${userData.id})
+💰 *Баланс после отправки:* ${userBalance - order.cost} SMS
+
+🔄 *Статус:* Ожидает отправки
             `.trim();
             
             try {
@@ -1011,7 +1107,15 @@ ${order.message}
                     body: JSON.stringify({
                         chat_id: TELEGRAM_GROUP_ID,
                         text: messageText,
-                        parse_mode: 'Markdown'
+                        parse_mode: 'Markdown',
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    { text: '✅ Отправлено', callback_data: `sent_${order.id}_${userData.id}` },
+                                    { text: '❌ Отменить', callback_data: `cancel_${order.id}_${userData.id}` }
+                                ]
+                            ]
+                        }
                     })
                 });
                 
@@ -1022,6 +1126,48 @@ ${order.message}
                 console.error('Ошибка отправки в группу:', error);
                 return false;
             }
+        }
+        
+        function renderHistory() {
+            if (userHistory.length === 0) {
+                historyList.innerHTML = '<div class="empty-history">История заказов пуста</div>';
+                return;
+            }
+            
+            historyList.innerHTML = '';
+            
+            userHistory.forEach(order => {
+                const li = document.createElement('li');
+                li.className = 'history-item';
+                
+                let statusClass = 'status-pending';
+                let statusText = 'Ожидает';
+                
+                if (order.status === 'sent') {
+                    statusClass = 'status-sent';
+                    statusText = 'Успешно';
+                } else if (order.status === 'cancelled') {
+                    statusClass = 'status-cancelled';
+                    statusText = 'Отменено';
+                } else if (order.status === 'failed') {
+                    statusClass = 'status-cancelled';
+                    statusText = 'Ошибка';
+                }
+                
+                li.innerHTML = `
+                    <div class="history-header">
+                        <div class="history-phone">${formatPhone(order.phone)}</div>
+                        <span class="history-status ${statusClass}">${statusText}</span>
+                    </div>
+                    <div class="history-message">${order.message}</div>
+                    <div class="history-footer">
+                        <span>${new Date(order.created_at).toLocaleString('ru-RU')}</span>
+                        <span class="history-cost">${order.cost} SMS</span>
+                    </div>
+                `;
+                
+                historyList.appendChild(li);
+            });
         }
         
         function handleLogout() {
@@ -1039,11 +1185,6 @@ ${order.message}
         }
         
         // Вспомогательные функции
-        function updateBalance() {
-            balanceAmount.textContent = userBalance;
-            localStorage.setItem('userBalance', userBalance.toString());
-        }
-        
         function calculateSmsCount(length) {
             if (length <= 70) return 1;
             return Math.ceil(length / 67);
@@ -1067,14 +1208,11 @@ ${order.message}
             return phone;
         }
         
-        function generateUserId() {
-            return Math.floor(1000000000 + Math.random() * 9000000000).toString();
-        }
-        
         function getPageTitle(tabName) {
             const titles = {
                 profile: 'Профиль',
                 sms: 'Отправить SMS',
+                history: 'История',
                 shop: 'Магазин'
             };
             return titles[tabName] || 'Приложение';
@@ -1091,24 +1229,21 @@ ${order.message}
             }, 3000);
         }
         
-        function showPaymentStatus(text, type, tab = 'profile') {
-            const statusElement = tab === 'shop' ? shopPaymentStatus : paymentStatus;
-            statusElement.textContent = text;
-            statusElement.className = `payment-status ${type}`;
+        function showError(text) {
+            errorMessage.textContent = text;
+            errorMessage.classList.add('show');
             
-            if (!text) {
-                statusElement.style.display = 'none';
-            } else {
-                statusElement.style.display = 'block';
-            }
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 5000);
         }
         
         // Инициализация
         document.addEventListener('DOMContentLoaded', init);
         
-        // Заглушка для тестирования вне Telegram
+        // Для тестирования без сервера
         if (!window.Telegram || !window.Telegram.WebApp) {
-            console.log('Telegram WebApp не обнаружен, запуск в демо-режиме');
+            console.log('Telegram WebApp не обнаружен, запуск в тестовом режиме');
             
             window.Telegram = {
                 WebApp: {
@@ -1129,7 +1264,6 @@ ${order.message}
                     },
                     openInvoice: (url, callback) => {
                         console.log('Opening invoice:', url);
-                        // Демо-имитация успешной оплаты через 2 секунды
                         setTimeout(() => {
                             callback('paid');
                         }, 2000);
@@ -1140,11 +1274,6 @@ ${order.message}
                     close: () => console.log('App closed')
                 }
             };
-            
-            // В демо-режиме показываем тестовый баланс
-            setTimeout(() => {
-                
-            }, 1000);
         }
     </script>
 </body>

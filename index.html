@@ -2,212 +2,142 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMS Sender | Telegram Mini App</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --tg-theme-bg-color: #ffffff;
-            --tg-theme-text-color: #000000;
-            --tg-theme-hint-color: #999999;
-            --tg-theme-link-color: #2481cc;
-            --tg-theme-button-color: #2481cc;
-            --tg-theme-button-text-color: #ffffff;
-            --tg-theme-secondary-bg-color: #f1f1f1;
-        }
-        
+        /* Сброс и базовые стили */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
         
         body {
-            background: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
-            min-height: 100vh;
-            padding: 16px;
-            padding-bottom: 80px;
-            max-width: 100%;
-            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            height: 100vh;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
-        /* Header с балансом */
-        .header {
-            background: var(--tg-theme-secondary-bg-color);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-            position: relative;
+        /* Основной контейнер без скролла */
+        .app-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
         }
         
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #2481cc, #2ecc71);
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .user-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2481cc, #2ecc71);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 20px;
-            margin-right: 12px;
-        }
-        
-        .user-name {
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        .user-id {
-            font-size: 14px;
-            color: var(--tg-theme-hint-color);
-            margin-top: 2px;
-        }
-        
-        .balance-card {
-            background: white;
-            border-radius: 12px;
+        /* Шапка приложения */
+        .app-header {
             padding: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            background: var(--tg-theme-bg-color, #ffffff);
+            border-bottom: 0.5px solid var(--tg-theme-secondary-bg-color, #f0f0f0);
+            position: relative;
+            z-index: 10;
         }
         
-        .balance-title {
-            font-size: 14px;
-            color: var(--tg-theme-hint-color);
-            margin-bottom: 8px;
-        }
-        
-        .balance-amount {
-            font-size: 32px;
+        .header-title {
+            font-size: 20px;
             font-weight: 700;
-            display: flex;
-            align-items: center;
+            text-align: center;
+            color: var(--tg-theme-text-color, #000000);
         }
         
-        .balance-unit {
-            font-size: 16px;
-            color: var(--tg-theme-hint-color);
-            margin-left: 4px;
-            font-weight: 500;
+        /* Основной контент с фиксированной высотой */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 16px;
+            padding-bottom: 80px; /* Место для кнопки */
         }
         
-        /* Настройки группы */
-        .group-settings {
-            background: var(--tg-theme-secondary-bg-color);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
+        /* Убираем скроллбар на iOS */
+        .main-content::-webkit-scrollbar {
+            display: none;
         }
         
-        .group-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 16px;
-            padding: 12px;
-            background: white;
-            border-radius: 12px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .group-icon {
-            width: 40px;
-            height: 40px;
+        /* Сообщение об ошибке */
+        .error-message {
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid rgba(255, 59, 48, 0.2);
             border-radius: 10px;
-            background: linear-gradient(135deg, #9b59b6, #e74c3c);
+            padding: 12px 16px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            margin-right: 12px;
-            font-size: 18px;
+            gap: 8px;
         }
         
-        .group-details {
+        .error-icon {
+            color: #FF3B30;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .error-text {
+            font-size: 14px;
+            color: var(--tg-theme-text-color, #000000);
+            font-weight: 500;
             flex: 1;
         }
         
-        .group-name {
-            font-weight: 600;
-            margin-bottom: 2px;
+        /* Карточки форм */
+        .form-card {
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-radius: 10px;
+            padding: 0;
+            margin-bottom: 16px;
+            overflow: hidden;
         }
         
-        .group-id {
-            font-size: 12px;
-            color: var(--tg-theme-hint-color);
+        .input-group {
+            padding: 16px;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
         }
         
-        /* Форма отправки */
-        .form-container {
-            background: var(--tg-theme-secondary-bg-color);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
+        .input-group:last-child {
+            border-bottom: none;
         }
         
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: var(--tg-theme-text-color);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-label {
+        .input-label {
             display: block;
             font-size: 14px;
             font-weight: 500;
+            color: var(--tg-theme-text-color, #000000);
             margin-bottom: 8px;
-            color: var(--tg-theme-text-color);
         }
         
         .input-field {
             width: 100%;
-            padding: 16px;
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
+            background: var(--tg-theme-bg-color, #ffffff);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 12px 16px;
             font-size: 16px;
-            transition: all 0.2s;
-            color: var(--tg-theme-text-color);
+            color: var(--tg-theme-text-color, #000000);
+            outline: none;
+            transition: border-color 0.2s;
         }
         
         .input-field:focus {
-            outline: none;
-            border-color: var(--tg-theme-button-color);
-            box-shadow: 0 0 0 2px rgba(36, 129, 204, 0.1);
+            border-color: var(--tg-theme-link-color, #007AFF);
         }
         
         .textarea-field {
-            min-height: 120px;
-            resize: vertical;
+            min-height: 100px;
+            resize: none;
+            font-family: inherit;
         }
         
+        /* Счетчики */
         .counter-row {
             display: flex;
             justify-content: space-between;
@@ -217,219 +147,103 @@
         
         .counter-label {
             font-size: 14px;
-            color: var(--tg-theme-hint-color);
+            color: var(--tg-theme-hint-color, #8E8E93);
         }
         
         .counter-value {
             font-size: 14px;
-            font-weight: 600;
-            color: var(--tg-theme-button-color);
+            font-weight: 500;
+            color: var(--tg-theme-link-color, #007AFF);
         }
         
-        /* Кнопки */
-        .primary-button {
-            background: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
-            border: none;
-            width: 100%;
+        /* SMS счетчик */
+        .sms-counter {
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-radius: 10px;
             padding: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 8px;
+            margin-bottom: 16px;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
         }
         
-        .primary-button:hover {
+        .sms-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--tg-theme-text-color, #000000);
+        }
+        
+        .sms-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--tg-theme-link-color, #007AFF);
+        }
+        
+        /* Кнопка отправки (фиксированная внизу) */
+        .send-button-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: var(--tg-theme-bg-color, #ffffff);
+            border-top: 0.5px solid var(--tg-theme-secondary-bg-color, #f0f0f0);
+            z-index: 100;
+        }
+        
+        .send-button {
+            width: 100%;
+            background: var(--tg-theme-button-color, #007AFF);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            border: none;
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .send-button:hover {
             opacity: 0.9;
         }
         
-        .primary-button:active {
+        .send-button:active {
+            opacity: 0.8;
             transform: scale(0.98);
         }
         
-        .primary-button:disabled {
+        .send-button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
         
         .button-icon {
-            margin-right: 8px;
-            font-size: 18px;
-        }
-        
-        /* Шаблоны */
-        .templates-section {
-            background: var(--tg-theme-secondary-bg-color);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-        
-        .templates-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 12px;
-            margin-top: 12px;
-        }
-        
-        .template-button {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 12px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: left;
-            color: var(--tg-theme-text-color);
-        }
-        
-        .template-button:hover {
-            border-color: var(--tg-theme-button-color);
-            background-color: rgba(36, 129, 204, 0.05);
-        }
-        
-        /* История */
-        .history-section {
-            background: var(--tg-theme-secondary-bg-color);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-        
-        .history-list {
-            list-style: none;
-        }
-        
-        .history-item {
-            background: white;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border-left: 4px solid var(--tg-theme-button-color);
-        }
-        
-        .history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        
-        .history-phone {
-            font-weight: 600;
-        }
-        
-        .history-message {
-            font-size: 14px;
-            color: var(--tg-theme-text-color);
-            margin-bottom: 8px;
-            word-break: break-word;
-        }
-        
-        .history-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            color: var(--tg-theme-hint-color);
-        }
-        
-        .history-status {
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        
-        .status-pending {
-            background-color: rgba(241, 196, 15, 0.1);
-            color: #f39c12;
-        }
-        
-        .status-sent {
-            background-color: rgba(46, 204, 113, 0.1);
-            color: #2ecc71;
-        }
-        
-        .status-failed {
-            background-color: rgba(231, 76, 60, 0.1);
-            color: #e74c3c;
-        }
-        
-        .status-group-sent {
-            background-color: rgba(155, 89, 182, 0.1);
-            color: #9b59b6;
-        }
-        
-        /* Пополнение баланса */
-        .topup-section {
-            background: var(--tg-theme-secondary-bg-color);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-        
-        .topup-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 12px;
-        }
-        
-        .topup-option {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .topup-option:hover {
-            border-color: var(--tg-theme-button-color);
-        }
-        
-        .topup-option.selected {
-            border-color: var(--tg-theme-button-color);
-            background-color: rgba(36, 129, 204, 0.05);
-        }
-        
-        .topup-amount {
             font-size: 20px;
-            font-weight: 700;
-            color: var(--tg-theme-text-color);
         }
         
-        .topup-description {
-            font-size: 12px;
-            color: var(--tg-theme-hint-color);
-            margin-top: 4px;
-        }
-        
-        /* Уведомления */
+        /* Уведомление */
         .notification {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%) translateY(-20px);
-            background: white;
-            padding: 16px 20px;
-            border-radius: 12px;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            padding: 12px 20px;
+            border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             z-index: 1000;
             opacity: 0;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             max-width: 90%;
             text-align: center;
-            border-left: 4px solid var(--tg-theme-button-color);
-            color: var(--tg-theme-text-color);
+            font-weight: 500;
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         .notification.show {
@@ -437,373 +251,232 @@
             transform: translateX(-50%) translateY(0);
         }
         
-        /* Адаптивность */
-        @media (max-width: 480px) {
-            .templates-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .topup-options {
-                grid-template-columns: 1fr;
-            }
-            
-            .user-name {
-                font-size: 16px;
-            }
-        }
-        
-        /* Анимации */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.3s ease forwards;
-        }
-        
-        /* Табы */
-        .tabs {
-            display: flex;
-            background: var(--tg-theme-secondary-bg-color);
-            border-radius: 12px;
-            padding: 4px;
-            margin-bottom: 20px;
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 12px;
+        /* Статус отправки */
+        .status-message {
             text-align: center;
-            cursor: pointer;
-            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 10px;
             font-weight: 500;
-            transition: all 0.2s;
+            display: none;
         }
         
-        .tab.active {
-            background: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        .status-message.success {
+            background: rgba(52, 199, 89, 0.1);
+            color: #34C759;
+            border: 1px solid rgba(52, 199, 89, 0.2);
+            display: block;
+        }
+        
+        .status-message.error {
+            background: rgba(255, 59, 48, 0.1);
+            color: #FF3B30;
+            border: 1px solid rgba(255, 59, 48, 0.2);
+            display: block;
+        }
+        
+        /* Загрузка */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Адаптация под темную тему */
+        @media (prefers-color-scheme: dark) {
+            .input-field {
+                background: var(--tg-theme-secondary-bg-color, #1c1c1e);
+                border-color: rgba(255, 255, 255, 0.1);
+                color: var(--tg-theme-text-color, #ffffff);
+            }
+            
+            .error-message {
+                background: rgba(255, 69, 58, 0.1);
+                border-color: rgba(255, 69, 58, 0.2);
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Шапка с информацией пользователя -->
-    <div class="header fade-in">
-        <div class="user-info">
-            <div class="user-avatar" id="userAvatar">U</div>
-            <div>
-                <div class="user-name" id="userName">Пользователь</div>
-                <div class="user-id" id="userId">ID: 00000</div>
-            </div>
+    <div class="app-container">
+        <!-- Шапка -->
+        <div class="app-header">
+            <h1 class="header-title">Отправить SMS</h1>
         </div>
         
-        <div class="balance-card">
-            <div class="balance-title">Баланс SMS</div>
-            <div class="balance-amount">
-                <span id="balanceAmount">0</span>
-                <span class="balance-unit">SMS</span>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Настройки группы -->
-    <div class="group-settings fade-in">
-        <h3 class="section-title">Настройки группы</h3>
-        <div class="group-info">
-            <div class="group-icon">👥</div>
-            <div class="group-details">
-                <div class="group-name" id="groupName">Группа не настроена</div>
-                <div class="group-id" id="groupId">ID: не указан</div>
-            </div>
+        <!-- Сообщение об ошибке -->
+        <div class="error-message" id="errorMessage" style="display: none;">
+            <span class="error-icon">⚠️</span>
+            <span class="error-text" id="errorText">Ошибка при отправке заказа в группу</span>
         </div>
         
-        <div class="form-group">
-            <label class="form-label" for="groupIdInput">ID группы Telegram</label>
-            <input type="text" id="groupIdInput" class="input-field" placeholder="-1001234567890">
-            <div class="counter-row">
-                <span class="counter-label">Укажите ID группы, куда будут отправляться заказы</span>
-            </div>
-        </div>
+        <!-- Статус отправки -->
+        <div class="status-message" id="statusMessage"></div>
         
-        <button class="primary-button" id="saveGroupButton">
-            <span class="button-icon">💾</span>
-            <span>Сохранить настройки группы</span>
-        </button>
-    </div>
-    
-    <!-- Табы -->
-    <div class="tabs">
-        <div class="tab active" data-tab="send">Отправить SMS</div>
-        <div class="tab" data-tab="history">История</div>
-        <div class="tab" data-tab="topup">Пополнить</div>
-    </div>
-    
-    <!-- Контент для вкладки "Отправить SMS" -->
-    <div id="sendTab" class="tab-content">
-        <div class="form-container fade-in">
-            <form id="smsForm">
-                <div class="form-group">
-                    <label class="form-label" for="phoneNumber">Номер телефона клиента</label>
-                    <input type="tel" id="phoneNumber" class="input-field" placeholder="79991234567" required>
+        <!-- Основной контент -->
+        <div class="main-content" id="mainContent">
+            <!-- Форма отправки -->
+            <div class="form-card">
+                <div class="input-group">
+                    <label class="input-label">Номер телефона клиента</label>
+                    <input type="tel" class="input-field" id="phoneNumber" placeholder="89526586644" value="89526586644">
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label" for="clientName">Имя клиента (необязательно)</label>
-                    <input type="text" id="clientName" class="input-field" placeholder="Иван Иванов">
+                <div class="input-group">
+                    <label class="input-label">Имя клиента (необязательно)</label>
+                    <input type="text" class="input-field" id="clientName" placeholder="Иван Иванов" value="Иван Иванов">
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label" for="messageText">Текст сообщения</label>
-                    <textarea id="messageText" class="input-field textarea-field" placeholder="Введите текст сообщения..." required maxlength="500"></textarea>
+                <div class="input-group">
+                    <label class="input-label">Текст сообщения</label>
+                    <textarea class="input-field textarea-field" id="messageText" placeholder="Введите текст сообщения..." maxlength="500">Напоминаем о вашей записи на завтра в 10:00. Ждем вас!</textarea>
                     <div class="counter-row">
                         <span class="counter-label">Длина сообщения</span>
-                        <span class="counter-value" id="charCount">0/500</span>
+                        <span class="counter-value" id="charCount">54/500</span>
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <div class="counter-row">
-                        <span class="counter-label">Количество SMS</span>
-                        <span class="counter-value" id="smsCount">1 SMS</span>
-                    </div>
-                </div>
-                
-                <button type="submit" class="primary-button" id="sendButton">
-                    <span class="button-icon">📨</span>
-                    <span>Заказать отправку SMS</span>
-                </button>
-            </form>
-        </div>
-        
-        <!-- Шаблоны сообщений -->
-        <div class="templates-section fade-in">
-            <h3 class="section-title">Шаблоны сообщений</h3>
-            <div class="templates-grid">
-                <button type="button" class="template-button" data-template="Напоминаем о вашей записи на завтра в 10:00. Ждем вас!">Напоминание о записи</button>
-                <button type="button" class="template-button" data-template="Ваш заказ готов к выдаче. Спасибо за покупку!">Готовность заказа</button>
-                <button type="button" class="template-button" data-template="Специальное предложение для вас! Скидка 15% до конца недели.">Спецпредложение</button>
-                <button type="button" class="template-button" data-template="Благодарим за обращение! Наш менеджер свяжется с вами в течение часа.">Подтверждение заявки</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Контент для вкладки "История" -->
-    <div id="historyTab" class="tab-content" style="display: none;">
-        <div class="history-section fade-in">
-            <h3 class="section-title">История отправок</h3>
-            <ul class="history-list" id="historyList">
-                <!-- История будет загружена здесь -->
-            </ul>
-        </div>
-    </div>
-    
-    <!-- Контент для вкладки "Пополнить" -->
-    <div id="topupTab" class="tab-content" style="display: none;">
-        <div class="topup-section fade-in">
-            <h3 class="section-title">Пополнить баланс</h3>
-            <div class="topup-options">
-                <div class="topup-option" data-amount="10">
-                    <div class="topup-amount">10 SMS</div>
-                    <div class="topup-description">Базовый пакет</div>
-                </div>
-                <div class="topup-option" data-amount="50">
-                    <div class="topup-amount">50 SMS</div>
-                    <div class="topup-description">-10% выгода</div>
-                </div>
-                <div class="topup-option" data-amount="100">
-                    <div class="topup-amount">100 SMS</div>
-                    <div class="topup-description">-15% выгода</div>
-                </div>
-                <div class="topup-option" data-amount="200">
-                    <div class="topup-amount">200 SMS</div>
-                    <div class="topup-description">-20% выгода</div>
                 </div>
             </div>
             
-            <button class="primary-button" id="topupButton" style="margin-top: 20px;">
-                <span class="button-icon">💳</span>
-                <span>Пополнить</span>
+            <!-- Счетчик SMS -->
+            <div class="sms-counter">
+                <span class="sms-label">Количество SMS</span>
+                <span class="sms-value" id="smsCount">1 SMS</span>
+            </div>
+        </div>
+        
+        <!-- Кнопка отправки (фиксированная) -->
+        <div class="send-button-container">
+            <button class="send-button" id="sendButton">
+                <span class="button-icon">📨</span>
+                <span>Заказать отправку SMS</span>
             </button>
         </div>
+        
+        <!-- Уведомление -->
+        <div class="notification" id="notification"></div>
     </div>
-    
-    <!-- Уведомление -->
-    <div class="notification" id="notification"></div>
 
     <script>
-        // Инициализация Telegram Web App
+        // Telegram Web App инициализация
         const tg = window.Telegram.WebApp;
         
-        // Конфигурация бота
-        const BOT_TOKEN = '-5100107384'; // Замените на токен вашего бота
+        // Конфигурация
+        const BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE'; // Замените на реальный токен
+        const TELEGRAM_GROUP_ID = 'YOUR_GROUP_ID_HERE'; // Замените на ID группы
         const API_URL = `https://api.telegram.org/bot${BOT_TOKEN}`;
         
         // DOM элементы
-        const smsForm = document.getElementById('smsForm');
+        const appContainer = document.querySelector('.app-container');
+        const mainContent = document.getElementById('mainContent');
         const phoneInput = document.getElementById('phoneNumber');
         const clientNameInput = document.getElementById('clientName');
         const messageInput = document.getElementById('messageText');
         const sendButton = document.getElementById('sendButton');
         const charCount = document.getElementById('charCount');
         const smsCount = document.getElementById('smsCount');
-        const balanceAmount = document.getElementById('balanceAmount');
-        const userAvatar = document.getElementById('userAvatar');
-        const userName = document.getElementById('userName');
-        const userId = document.getElementById('userId');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const statusMessage = document.getElementById('statusMessage');
         const notification = document.getElementById('notification');
-        const historyList = document.getElementById('historyList');
-        const topupButton = document.getElementById('topupButton');
-        const templateButtons = document.querySelectorAll('.template-button');
-        const topupOptions = document.querySelectorAll('.topup-option');
-        const saveGroupButton = document.getElementById('saveGroupButton');
-        const groupIdInput = document.getElementById('groupIdInput');
-        const groupName = document.getElementById('groupName');
-        const groupId = document.getElementById('groupId');
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = {
-            send: document.getElementById('sendTab'),
-            history: document.getElementById('historyTab'),
-            topup: document.getElementById('topupTab')
-        };
         
         // Переменные состояния
-        let selectedTopupAmount = 10;
-        let userBalance = 0;
-        let messageHistory = [];
-        let telegramGroupId = null;
+        let isSending = false;
         
         // Инициализация приложения
         function init() {
-            // Инициализация Telegram Web App
+            // Инициализация Telegram WebApp
             tg.expand();
             tg.ready();
             
-            // Установка данных пользователя из Telegram
-            if (tg.initDataUnsafe.user) {
-                const user = tg.initDataUnsafe.user;
-                setupUserData(user);
-            }
+            // Настройка темы
+            applyTheme();
             
-            // Настройка темы Telegram
-            applyTelegramTheme();
+            // Блокировка скролла
+            disableScroll();
             
-            // Загрузка данных
-            loadUserData();
-            
-            // Обработчики событий
+            // Настройка обработчиков событий
             setupEventListeners();
             
-            // Инициализация UI
+            // Инициализация счетчика символов
             updateCharCount();
-            renderHistory();
             
-            // Проверка настроек группы
-            checkGroupSettings();
+            // Проверка конфигурации
+            checkConfig();
             
             // Показать приветственное сообщение
             setTimeout(() => {
-                showNotification('Добро пожаловать в SMS Sender! Заказы будут отправляться в Telegram группу.', 3000);
-            }, 1000);
-        }
-        
-        // Настройка данных пользователя
-        function setupUserData(user) {
-            let displayName = '';
-            if (user.first_name) {
-                displayName = user.first_name;
-                if (user.last_name) {
-                    displayName += ' ' + user.last_name;
-                }
-            } else if (user.username) {
-                displayName = '@' + user.username;
-            } else {
-                displayName = 'Пользователь';
-            }
-            
-            userName.textContent = displayName;
-            userId.textContent = `ID: ${user.id}`;
-            
-            if (user.first_name) {
-                userAvatar.textContent = user.first_name.charAt(0).toUpperCase();
-            }
+                showNotification('Готово к отправке SMS');
+            }, 500);
         }
         
         // Применение темы Telegram
-        function applyTelegramTheme() {
-            document.documentElement.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#ffffff');
-            document.documentElement.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#000000');
-            document.documentElement.style.setProperty('--tg-theme-hint-color', tg.themeParams.hint_color || '#999999');
-            document.documentElement.style.setProperty('--tg-theme-link-color', tg.themeParams.link_color || '#2481cc');
-            document.documentElement.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#2481cc');
-            document.documentElement.style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color || '#ffffff');
-            document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', tg.themeParams.secondary_bg_color || '#f1f1f1');
+        function applyTheme() {
+            // Устанавливаем CSS переменные из темы Telegram
+            const themeParams = tg.themeParams || {};
+            
+            document.documentElement.style.setProperty('--tg-theme-bg-color', themeParams.bg_color || '#ffffff');
+            document.documentElement.style.setProperty('--tg-theme-text-color', themeParams.text_color || '#000000');
+            document.documentElement.style.setProperty('--tg-theme-hint-color', themeParams.hint_color || '#999999');
+            document.documentElement.style.setProperty('--tg-theme-link-color', themeParams.link_color || '#007AFF');
+            document.documentElement.style.setProperty('--tg-theme-button-color', themeParams.button_color || '#007AFF');
+            document.documentElement.style.setProperty('--tg-theme-button-text-color', themeParams.button_text_color || '#ffffff');
+            document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', themeParams.secondary_bg_color || '#f0f0f0');
+            
+            // Устанавливаем цвет фона body
+            document.body.style.backgroundColor = themeParams.bg_color || '#ffffff';
+        }
+        
+        // Блокировка скролла
+        function disableScroll() {
+            // Предотвращаем скролл страницы
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+            
+            // Блокируем скролл жестами
+            document.addEventListener('touchmove', function(e) {
+                // Разрешаем скролл только внутри mainContent
+                if (!e.target.closest('.main-content')) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            // Ограничиваем высоту контента
+            updateContentHeight();
+            window.addEventListener('resize', updateContentHeight);
+        }
+        
+        // Обновление высоты контента
+        function updateContentHeight() {
+            const headerHeight = document.querySelector('.app-header').offsetHeight;
+            const buttonHeight = document.querySelector('.send-button-container').offsetHeight;
+            const errorHeight = errorMessage.style.display !== 'none' ? errorMessage.offsetHeight : 0;
+            const statusHeight = statusMessage.style.display !== 'none' ? statusMessage.offsetHeight : 0;
+            
+            const availableHeight = window.innerHeight - headerHeight - buttonHeight - errorHeight - statusHeight - 32;
+            mainContent.style.maxHeight = `${availableHeight}px`;
         }
         
         // Настройка обработчиков событий
         function setupEventListeners() {
-            // Обновление счетчика символов
+            // Счетчик символов
             messageInput.addEventListener('input', updateCharCount);
             
             // Отправка формы
-            smsForm.addEventListener('submit', handleSubmit);
+            sendButton.addEventListener('click', handleSubmit);
             
-            // Шаблоны сообщений
-            templateButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    messageInput.value = this.getAttribute('data-template');
-                    updateCharCount();
-                    showNotification('Шаблон применен', 2000);
-                });
-            });
+            // Валидация телефона
+            phoneInput.addEventListener('blur', validatePhone);
             
-            // Выбор варианта пополнения
-            topupOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    topupOptions.forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                    selectedTopupAmount = parseInt(this.getAttribute('data-amount'));
-                });
-            });
-            
-            // Пополнение баланса
-            topupButton.addEventListener('click', handleTopup);
-            
-            // Сохранение настроек группы
-            saveGroupButton.addEventListener('click', saveGroupSettings);
-            
-            // Переключение табов
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    
-                    // Убрать активный класс у всех табов
-                    tabs.forEach(t => t.classList.remove('active'));
-                    
-                    // Добавить активный класс текущему табу
-                    this.classList.add('active');
-                    
-                    // Скрыть все вкладки контента
-                    Object.values(tabContents).forEach(content => {
-                        content.style.display = 'none';
-                    });
-                    
-                    // Показать выбранную вкладку
-                    if (tabContents[tabId]) {
-                        tabContents[tabId].style.display = 'block';
-                    }
-                    
-                    // Обновить историю при переходе на вкладку истории
-                    if (tabId === 'history') {
-                        renderHistory();
-                    }
-                });
-            });
-            
-            // Выделить первый вариант пополнения по умолчанию
-            if (topupOptions.length > 0) {
-                topupOptions[0].classList.add('selected');
-            }
+            // Обновление высоты при изменениях
+            messageInput.addEventListener('input', updateContentHeight);
         }
         
         // Обновление счетчика символов
@@ -812,196 +485,168 @@
             charCount.textContent = `${length}/500`;
             
             // Расчет количества SMS
-            let count = 1;
-            if (length > 70) {
-                count = Math.ceil(length / 67);
-            }
-            
-            smsCount.textContent = `${count} SMS`;
+            const smsCountValue = calculateSmsCount(length);
+            smsCount.textContent = `${smsCountValue} SMS`;
             
             // Подсветка при приближении к лимиту
             if (length > 400) {
-                charCount.style.color = '#e74c3c';
-                charCount.style.fontWeight = 'bold';
+                charCount.style.color = '#FF3B30';
             } else {
                 charCount.style.color = '';
-                charCount.style.fontWeight = '';
             }
         }
         
-        // Обработка отправки SMS
-        function handleSubmit(e) {
-            e.preventDefault();
-            
+        // Расчет количества SMS
+        function calculateSmsCount(length) {
+            if (length <= 70) return 1;
+            return Math.ceil(length / 67);
+        }
+        
+        // Валидация телефона
+        function validatePhone() {
             const phone = phoneInput.value.trim();
-            const clientName = clientNameInput.value.trim();
-            const message = messageInput.value.trim();
+            if (phone && !isValidPhone(phone)) {
+                showError('Введите корректный номер телефона');
+                return false;
+            }
+            return true;
+        }
+        
+        // Проверка конфигурации
+        function checkConfig() {
+            if (BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE' || TELEGRAM_GROUP_ID === 'YOUR_GROUP_ID_HERE') {
+                showError('Настройте BOT_TOKEN и TELEGRAM_GROUP_ID в коде');
+                sendButton.disabled = true;
+                return false;
+            }
+            return true;
+        }
+        
+        // Обработка отправки
+        async function handleSubmit() {
+            if (isSending) return;
+            
+            // Скрываем предыдущие ошибки
+            hideError();
+            hideStatus();
             
             // Валидация
-            if (!phone) {
-                showNotification('Введите номер телефона клиента', 3000);
-                phoneInput.focus();
+            if (!validateForm()) {
                 return;
             }
             
-            if (!message) {
-                showNotification('Введите текст сообщения', 3000);
-                messageInput.focus();
-                return;
+            // Подготовка данных
+            const orderData = {
+                phone: phoneInput.value.trim(),
+                clientName: clientNameInput.value.trim() || 'Не указано',
+                message: messageInput.value.trim(),
+                timestamp: new Date().toLocaleString('ru-RU'),
+                smsCount: calculateSmsCount(messageInput.value.trim().length)
+            };
+            
+            // Начинаем отправку
+            isSending = true;
+            updateSendButton(true);
+            showStatus('Отправка заказа в группу...', 'info');
+            
+            try {
+                // Отправляем заказ в Telegram группу
+                const success = await sendToTelegramGroup(orderData);
+                
+                if (success) {
+                    // Успешная отправка
+                    showStatus('Заказ успешно отправлен в группу!', 'success');
+                    showNotification('Заказ создан и отправлен администраторам');
+                    
+                    // Очистка формы (кроме телефона)
+                    clientNameInput.value = '';
+                    messageInput.value = '';
+                    updateCharCount();
+                    
+                    // Вибрация в Telegram
+                    if (tg.HapticFeedback) {
+                        tg.HapticFeedback.impactOccurred('medium');
+                    }
+                } else {
+                    // Ошибка отправки
+                    showError('Ошибка при отправке заказа в группу');
+                    showStatus('Ошибка отправки', 'error');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showError('Ошибка при отправке заказа');
+                showStatus('Ошибка отправки', 'error');
+            } finally {
+                // Завершаем отправку
+                isSending = false;
+                updateSendButton(false);
+                updateContentHeight();
+            }
+        }
+        
+        // Валидация формы
+        function validateForm() {
+            const phone = phoneInput.value.trim();
+            const message = messageInput.value.trim();
+            
+            // Проверка телефона
+            if (!phone) {
+                showError('Введите номер телефона клиента');
+                phoneInput.focus();
+                return false;
             }
             
             if (!isValidPhone(phone)) {
-                showNotification('Введите корректный номер телефона', 3000);
+                showError('Введите корректный номер телефона');
                 phoneInput.focus();
-                return;
+                return false;
             }
             
-            // Расчет стоимости
-            const messageLength = message.length;
-            let cost = 1;
-            if (messageLength > 70) {
-                cost = Math.ceil(messageLength / 67);
+            // Проверка сообщения
+            if (!message) {
+                showError('Введите текст сообщения');
+                messageInput.focus();
+                return false;
             }
             
-            // Проверка баланса
-            if (userBalance < cost) {
-                showNotification(`Недостаточно SMS. Нужно: ${cost}, доступно: ${userBalance}`, 4000);
-                return;
+            if (message.length > 500) {
+                showError('Сообщение слишком длинное (макс. 500 символов)');
+                messageInput.focus();
+                return false;
             }
             
-            // Проверка настроек группы
-            if (!telegramGroupId) {
-                showNotification('Сначала настройте ID группы Telegram', 4000);
-                groupIdInput.focus();
-                return;
-            }
-            
-            // Подтверждение отправки
-            const confirmMessage = `Заказать отправку SMS на номер ${formatPhone(phone)}?\nСтоимость: ${cost} SMS\nСообщение будет отправлено в группу Telegram`;
-            
-            if (tg.showConfirm) {
-                tg.showConfirm(confirmMessage, (confirmed) => {
-                    if (confirmed) {
-                        createSMSOrder(phone, clientName, message, cost);
-                    }
-                });
-            } else {
-                // Для тестирования вне Telegram
-                if (confirm(confirmMessage)) {
-                    createSMSOrder(phone, clientName, message, cost);
-                }
-            }
+            return true;
         }
         
-        // Создание заказа SMS
-        function createSMSOrder(phone, clientName, message, cost) {
-            // Блокировка кнопки
-            sendButton.disabled = true;
-            sendButton.innerHTML = '<span class="button-icon">⏳</span><span>Создание заказа...</span>';
-            
-            // Создание записи в истории
-            const orderId = Date.now();
-            const order = {
-                id: orderId,
-                phone: phone,
-                clientName: clientName || 'Не указано',
-                message: message,
-                cost: cost,
-                status: 'pending',
-                timestamp: new Date().toLocaleString('ru-RU'),
-                groupId: telegramGroupId
-            };
-            
-            addToHistory(order);
-            renderHistory();
-            
-            // Отправка заказа в группу Telegram
-            sendOrderToTelegramGroup(order)
-                .then(success => {
-                    if (success) {
-                        // Обновление статуса заказа
-                        order.status = 'group-sent';
-                        order.groupSent = true;
-                        order.groupSentTime = new Date().toLocaleString('ru-RU');
-                        
-                        // Списание с баланса
-                        userBalance -= cost;
-                        saveUserData();
-                        
-                        showNotification(`Заказ создан! Уведомление отправлено в группу Telegram. Списано ${cost} SMS`, 4000);
-                        
-                        // Очистка формы
-                        messageInput.value = '';
-                        clientNameInput.value = '';
-                        updateCharCount();
-                        
-                        // Вибрация в Telegram
-                        if (tg.HapticFeedback) {
-                            tg.HapticFeedback.impactOccurred('medium');
-                        }
-                    } else {
-                        // Ошибка отправки в группу
-                        order.status = 'failed';
-                        showNotification('Ошибка при отправке заказа в группу', 4000);
-                    }
-                    
-                    // Обновление истории
-                    updateHistoryItem(order.id, order);
-                    renderHistory();
-                    
-                    // Разблокировка кнопки
-                    sendButton.disabled = false;
-                    sendButton.innerHTML = '<span class="button-icon">📨</span><span>Заказать отправку SMS</span>';
-                })
-                .catch(error => {
-                    console.error('Ошибка при отправке заказа:', error);
-                    order.status = 'failed';
-                    updateHistoryItem(order.id, order);
-                    renderHistory();
-                    
-                    showNotification('Ошибка при создании заказа', 4000);
-                    
-                    // Разблокировка кнопки
-                    sendButton.disabled = false;
-                    sendButton.innerHTML = '<span class="button-icon">📨</span><span>Заказать отправку SMS</span>';
-                });
-        }
-        
-        // Отправка заказа в группу Telegram
-        async function sendOrderToTelegramGroup(order) {
-            // Если токен бота не указан, используем заглушку для демонстрации
-            if (BOT_TOKEN === '8426730940:AAGPW1pPY2R8VyJvZLNvd5oeB9eS9QojDAo') {
-                // Демо-режим - имитация успешной отправки
-                console.log('Демо-режим: Заказ отправлен в группу', order);
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                return true;
-            }
+        // Отправка в Telegram группу
+        async function sendToTelegramGroup(orderData) {
+            // Формируем сообщение для группы
+            const messageText = `
+📱 *НОВЫЙ ЗАКАЗ SMS*
+
+👤 *Клиент:* ${orderData.clientName}
+📞 *Телефон:* \`${formatPhone(orderData.phone)}\`
+
+💬 *Сообщение:*
+${orderData.message}
+
+📊 *Детали:*
+• Длина: ${orderData.message.length} символов
+• SMS: ${orderData.smsCount} шт.
+• Время: ${orderData.timestamp}
+
+🆔 *ID:* ${Date.now()}
+            `.trim();
             
             try {
-                // Формирование сообщения для группы
-                const messageText = `
-📨 *НОВЫЙ ЗАКАЗ SMS*
-────────────────────
-👤 *Клиент:* ${order.clientName}
-📱 *Телефон:* \`${formatPhone(order.phone)}\`
-📝 *Сообщение:*
-${order.message}
-────────────────────
-💰 *Стоимость:* ${order.cost} SMS
-🆔 *ID заказа:* ${order.id}
-⏰ *Время:* ${order.timestamp}
-────────────────────
-_Для обработки заказа используйте команду /process_${order.id}_
-                `;
-                
-                // Отправка сообщения в группу через Telegram Bot API
+                // Отправляем через Telegram Bot API
                 const response = await fetch(`${API_URL}/sendMessage`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        chat_id: telegramGroupId,
+                        chat_id: TELEGRAM_GROUP_ID,
                         text: messageText,
                         parse_mode: 'Markdown',
                         disable_notification: false
@@ -1014,228 +659,89 @@ _Для обработки заказа используйте команду /p
                     console.log('Сообщение отправлено в группу:', data.result);
                     return true;
                 } else {
-                    console.error('Ошибка отправки в группу:', data);
-                    return false;
+                    console.error('Ошибка API Telegram:', data);
+                    
+                    // Пробуем отправить без Markdown
+                    const fallbackResponse = await fetch(`${API_URL}/sendMessage`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            chat_id: TELEGRAM_GROUP_ID,
+                            text: messageText.replace(/\*/g, ''),
+                            disable_notification: false
+                        })
+                    });
+                    
+                    const fallbackData = await fallbackResponse.json();
+                    return fallbackData.ok;
                 }
             } catch (error) {
-                console.error('Ошибка при отправке в группу:', error);
+                console.error('Ошибка сети:', error);
                 return false;
             }
         }
         
-        // Пополнение баланса
-        function handleTopup() {
-            const paymentMessage = `Пополнить баланс на ${selectedTopupAmount} SMS?`;
-            
-            if (tg.showConfirm) {
-                tg.showConfirm(paymentMessage, (confirmed) => {
-                    if (confirmed) {
-                        processTopup(selectedTopupAmount);
-                    }
-                });
-            } else {
-                if (confirm(paymentMessage)) {
-                    processTopup(selectedTopupAmount);
-                }
-            }
-        }
-        
-        // Обработка пополнения
-        function processTopup(amount) {
-            showNotification(`Обработка оплаты ${amount} SMS...`, 2000);
-            
-            setTimeout(() => {
-                userBalance += amount;
-                saveUserData();
-                updateBalanceDisplay();
-                
-                showNotification(`Баланс пополнен на ${amount} SMS!`, 4000);
-                
-                // Вибрация в Telegram
-                if (tg.HapticFeedback) {
-                    tg.HapticFeedback.impactOccurred('heavy');
-                }
-            }, 2000);
-        }
-        
-        // Сохранение настроек группы
-        function saveGroupSettings() {
-            const groupId = groupIdInput.value.trim();
-            
-            if (!groupId) {
-                showNotification('Введите ID группы Telegram', 3000);
-                groupIdInput.focus();
-                return;
-            }
-            
-            // Проверка формата ID группы
-            if (!isValidGroupId(groupId)) {
-                showNotification('Введите корректный ID группы Telegram', 3000);
-                groupIdInput.focus();
-                return;
-            }
-            
-            telegramGroupId = groupId;
-            localStorage.setItem('telegramGroupId', groupId);
-            
-            // Обновление отображения
-            groupName.textContent = 'Группа Telegram';
-            groupId.textContent = `ID: ${groupId}`;
-            
-            showNotification('Настройки группы сохранены', 3000);
-            
-            // Проверка доступности группы (демо-режим)
-            checkGroupAvailability(groupId);
-        }
-        
-        // Проверка настроек группы
-        function checkGroupSettings() {
-            const savedGroupId = localStorage.getItem('telegramGroupId');
-            
-            if (savedGroupId) {
-                telegramGroupId = savedGroupId;
-                groupIdInput.value = savedGroupId;
-                groupName.textContent = 'Группа Telegram';
-                groupId.textContent = `ID: ${savedGroupId}`;
-                
-                // Проверка доступности группы
-                checkGroupAvailability(savedGroupId);
-            }
-        }
-        
-        // Проверка доступности группы (демо-функция)
-        function checkGroupAvailability(groupId) {
-            // В демо-режиме просто имитируем проверку
-            setTimeout(() => {
-                showNotification('Группа настроена и готова к приему заказов', 3000);
-            }, 1000);
-        }
-        
-        // Добавление в историю
-        function addToHistory(order) {
-            messageHistory.unshift(order);
-            
-            if (messageHistory.length > 50) {
-                messageHistory = messageHistory.slice(0, 50);
-            }
-            
-            saveUserData();
-        }
-        
-        // Обновление элемента истории
-        function updateHistoryItem(orderId, updatedOrder) {
-            const index = messageHistory.findIndex(item => item.id === orderId);
-            if (index !== -1) {
-                messageHistory[index] = updatedOrder;
-                saveUserData();
-            }
-        }
-        
-        // Отображение истории
-        function renderHistory() {
-            if (messageHistory.length === 0) {
-                historyList.innerHTML = '<li style="text-align: center; padding: 20px; color: var(--tg-theme-hint-color);">История заказов пуста</li>';
-                return;
-            }
-            
-            historyList.innerHTML = '';
-            
-            messageHistory.forEach(order => {
-                const li = document.createElement('li');
-                li.className = 'history-item fade-in';
-                
-                // Определение статуса
-                let statusClass, statusText;
-                switch(order.status) {
-                    case 'pending':
-                        statusClass = 'status-pending';
-                        statusText = 'В обработке';
-                        break;
-                    case 'group-sent':
-                        statusClass = 'status-group-sent';
-                        statusText = 'Отправлен в группу';
-                        break;
-                    case 'sent':
-                        statusClass = 'status-sent';
-                        statusText = 'SMS отправлено';
-                        break;
-                    case 'failed':
-                        statusClass = 'status-failed';
-                        statusText = 'Ошибка';
-                        break;
-                    default:
-                        statusClass = 'status-pending';
-                        statusText = 'В обработке';
-                }
-                
-                li.innerHTML = `
-                    <div class="history-header">
-                        <div class="history-phone">${formatPhone(order.phone)}</div>
-                        <span class="history-status ${statusClass}">${statusText}</span>
-                    </div>
-                    <div class="history-message">${order.message}</div>
-                    <div class="history-footer">
-                        <span>${order.timestamp}</span>
-                        <span>${order.cost} SMS</span>
-                    </div>
-                `;
-                
-                historyList.appendChild(li);
-            });
-        }
-        
-        // Загрузка данных пользователя
-        function loadUserData() {
-            const savedBalance = localStorage.getItem('smsBalance');
-            const savedHistory = localStorage.getItem('smsHistory');
-            
-            if (savedBalance) {
-                userBalance = parseInt(savedBalance);
-            } else {
-                userBalance = 10; // Начальный баланс для демонстрации
-            }
-            
-            if (savedHistory) {
-                messageHistory = JSON.parse(savedHistory);
-            }
-            
-            updateBalanceDisplay();
-        }
-        
-        // Сохранение данных пользователя
-        function saveUserData() {
-            localStorage.setItem('smsBalance', userBalance.toString());
-            localStorage.setItem('smsHistory', JSON.stringify(messageHistory));
-        }
-        
-        // Обновление отображения баланса
-        function updateBalanceDisplay() {
-            balanceAmount.textContent = userBalance;
-        }
-        
         // Вспомогательные функции
         function isValidPhone(phone) {
+            // Простая валидация российских номеров
             const phoneRegex = /^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
-            return phoneRegex.test(phone);
-        }
-        
-        function isValidGroupId(groupId) {
-            // ID группы может быть отрицательным числом
-            return /^-?[0-9]+$/.test(groupId);
+            return phoneRegex.test(phone.replace(/\D/g, ''));
         }
         
         function formatPhone(phone) {
-            let cleanPhone = phone.replace(/\D/g, '');
+            const cleanPhone = phone.replace(/\D/g, '');
             
             if (cleanPhone.startsWith('7') || cleanPhone.startsWith('8')) {
-                cleanPhone = '7' + cleanPhone.substring(1);
-            }
-            
-            if (cleanPhone.length >= 11) {
-                return `+7 (${cleanPhone.substring(1, 4)}) ${cleanPhone.substring(4, 7)}-${cleanPhone.substring(7, 9)}-${cleanPhone.substring(9, 11)}`;
+                const formatted = cleanPhone.startsWith('7') ? cleanPhone : '7' + cleanPhone.substring(1);
+                if (formatted.length >= 11) {
+                    return `+7 (${formatted.substring(1, 4)}) ${formatted.substring(4, 7)}-${formatted.substring(7, 9)}-${formatted.substring(9, 11)}`;
+                }
             }
             
             return phone;
+        }
+        
+        // Управление UI
+        function updateSendButton(sending) {
+            if (sending) {
+                sendButton.innerHTML = '<div class="loading"></div>';
+                sendButton.disabled = true;
+            } else {
+                sendButton.innerHTML = '<span class="button-icon">📨</span><span>Заказать отправку SMS</span>';
+                sendButton.disabled = false;
+            }
+        }
+        
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = 'flex';
+            updateContentHeight();
+            
+            // Автоматически скрываем через 5 секунд
+            setTimeout(hideError, 5000);
+        }
+        
+        function hideError() {
+            errorMessage.style.display = 'none';
+            updateContentHeight();
+        }
+        
+        function showStatus(message, type = 'info') {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type}`;
+            updateContentHeight();
+            
+            // Автоматически скрываем успешные/ошибочные статусы
+            if (type !== 'info') {
+                setTimeout(hideStatus, 5000);
+            }
+        }
+        
+        function hideStatus() {
+            statusMessage.className = 'status-message';
+            updateContentHeight();
         }
         
         function showNotification(text, duration = 3000) {
@@ -1247,45 +753,37 @@ _Для обработки заказа используйте команду /p
             }, duration);
         }
         
-        // Запуск приложения
+        // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', init);
         
-        // Для тестирования вне Telegram
+        // Заглушка для тестирования вне Telegram
         if (!window.Telegram || !window.Telegram.WebApp) {
-            console.log('Телеграм Web App не обнаружен, запущен режим тестирования');
+            console.log('Telegram WebApp не обнаружен, запуск в демо-режиме');
             
             window.Telegram = {
                 WebApp: {
-                    initDataUnsafe: {
-                        user: {
-                            id: 123456789,
-                            first_name: 'Тест',
-                            last_name: 'Пользователь',
-                            username: 'testuser'
-                        }
-                    },
-                    expand: function() { console.log('App expanded'); },
-                    ready: function() { console.log('App ready'); },
-                    showConfirm: function(message, callback) {
-                        const confirmed = confirm(message);
-                        callback(confirmed);
-                    },
+                    initDataUnsafe: {},
+                    expand: () => console.log('App expanded'),
+                    ready: () => console.log('App ready'),
                     themeParams: {
                         bg_color: '#ffffff',
                         text_color: '#000000',
-                        hint_color: '#999999',
-                        link_color: '#2481cc',
-                        button_color: '#2481cc',
+                        hint_color: '#8E8E93',
+                        link_color: '#007AFF',
+                        button_color: '#007AFF',
                         button_text_color: '#ffffff',
-                        secondary_bg_color: '#f1f1f1'
+                        secondary_bg_color: '#f0f0f0'
                     },
                     HapticFeedback: {
-                        impactOccurred: function(style) {
-                            console.log('Haptic feedback:', style);
-                        }
+                        impactOccurred: (style) => console.log('Haptic:', style)
                     }
                 }
             };
+            
+            // В демо-режиме показываем тестовую ошибку конфигурации
+            setTimeout(() => {
+                showError('Ошибка при отправке заказа в группу. Проверьте настройки бота.');
+            }, 1000);
         }
     </script>
 </body>

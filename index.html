@@ -75,7 +75,7 @@
         }
 
         /* Content Sections */
-                .section {
+        .section {
             display: none;
             padding: 20px;
             animation: fadeIn 0.3s ease;
@@ -113,6 +113,7 @@
             font-size: 16px;
             margin-top: 10px;
             cursor: pointer;
+            transition: transform 0.1s;
         }
 
         .main-btn:active { transform: scale(0.98); }
@@ -123,9 +124,33 @@
             border-radius: 12px;
             margin-bottom: 10px;
             border: 1px solid transparent;
+            transition: border-color 0.2s;
         }
         
         .template-card:hover { border-color: var(--button-color); }
+
+        .small-btn {
+            background-color: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .status-message {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .warning { background-color: #fff3cd; color: #856404; }
     </style>
 </head>
 <body>
@@ -139,6 +164,9 @@
         </div>
         <i class="fas fa-wallet fa-2x"></i>
     </div>
+    <button class="small-btn" onclick="getBalance()" style="margin-top: 10px;">
+        <i class="fas fa-sync-alt"></i> Обновить баланс
+    </button>
 </header>
 
 <div class="tabs">
@@ -150,9 +178,9 @@
 <!-- Секция SMS -->
 <div id="sms" class="section active">
     <h3>Отправить сообщение</h3>
-        <div class="input-group">
+    <div class="input-group">
         <label>Номер телефона</label>
-        <input type="number" id="phone" placeholder="79991234567">
+        <input type="tel" id="phone" placeholder="79991234567" inputmode="numeric">
     </div>
     <div class="input-group">
         <label>Текст сообщения</label>
@@ -162,60 +190,130 @@
         <label>Количество отправок</label>
         <select id="quantity">
             <option value="1">1 SMS</option>
+            <option value="2">2 SMS</option>
+            <option value="3">3 SMS</option>
             <option value="5">5 SMS</option>
             <option value="10">10 SMS</option>
         </select>
     </div>
-    <button class="main-btn" onclick="sendOrder()">Заказать рассылку</button>
+    <button class="main-btn" onclick="sendOrder()">
+        <i class="fas fa-paper-plane"></i> Заказать рассылку
+    </button>
+    <div id="sms-status" class="status-message" style="display: none;"></div>
 </div>
 
 <!-- Секция Магазин -->
 <div id="shop" class="section">
     <h3>Купить готовые шаблоны</h3>
+    <p style="color: var(--hint-color); margin-bottom: 15px;">Выберите категорию шаблонов:</p>
+    
     <div class="template-card">
-        <strong>Категория: Банки</strong>
-        <p>Доступно: 15 шт.</p>
-        <button class="main-btn" style="padding: 8px;" onclick="buyTemplate('banks')">Смотреть</button>
+        <strong><i class="fas fa-university"></i> Банки</strong>
+        <p style="font-size: 14px; color: var(--hint-color); margin: 5px 0;">Готовые шаблоны для банковских рассылок</p>
+        <button class="small-btn" onclick="openShopCategory('Банки')">
+            <i class="fas fa-eye"></i> Смотреть шаблоны
+        </button>
     </div>
+    
     <div class="template-card">
-        <strong>Категория: Сервисы</strong>
-        <p>Доступно: 8 шт.</p>
-        <button class="main-btn" style="padding: 8px;" onclick="buyTemplate('services')">Смотреть</button>
+        <strong><i class="fas fa-concierge-bell"></i> Сервисы</strong>
+        <p style="font-size: 14px; color: var(--hint-color); margin: 5px 0;">Шаблоны для сервисных сообщений</p>
+        <button class="small-btn" onclick="openShopCategory('Сервисы')">
+            <i class="fas fa-eye"></i> Смотреть шаблоны
+        </button>
     </div>
+    
+    <div class="template-card">
+        <strong><i class="fas fa-shopping-cart"></i> Маркетинг</strong>
+        <p style="font-size: 14px; color: var(--hint-color); margin: 5px 0;">Промо-сообщения для маркетинга</p>
+        <button class="small-btn" onclick="openShopCategory('Маркетинг')">
+            <i class="fas fa-eye"></i> Смотреть шаблоны
+        </button>
+    </div>
+    
+    <div class="template-card">
+        <strong><i class="fas fa-info-circle"></i> Информационные</strong>
+        <p style="font-size: 14px; color: var(--hint-color); margin: 5px 0;">Информационные и уведомительные шаблоны</p>
+        <button class="small-btn" onclick="openShopCategory('Информационные')">
+            <i class="fas fa-eye"></i> Смотреть шаблоны
+        </button>
+    </div>
+    
+    <div id="shop-status" class="status-message" style="display: none;"></div>
 </div>
 
 <!-- Секция Профиль -->
 <div id="profile" class="section">
     <div class="template-card">
-        <p><strong>ID:</strong> <span id="uid"></span></p>
-        <p><strong>Регистрация:</strong> <span id="reg_date">17.05.2024</span></p>
+        <p><strong><i class="fas fa-id-card"></i> ID:</strong> <span id="uid"></span></p>
+        <p><strong><i class="fas fa-calendar-alt"></i> Имя:</strong> <span id="user-name"></span></p>
+        <p><strong><i class="fas fa-calendar-alt"></i> Регистрация:</strong> <span id="reg-date">Загрузка...</span></p>
     </div>
-    <button class="main-btn" onclick="topUp()">Пополнить баланс</button>
-    <button class="main-btn" style="background: #e74c3c;" onclick="tg.close()">Выход</button>
+    
+    <button class="main-btn" onclick="topUp()">
+        <i class="fas fa-coins"></i> Пополнить баланс
+    </button>
+    
+    <button class="main-btn" onclick="getBalance()" style="background: #2ecc71;">
+        <i class="fas fa-sync-alt"></i> Обновить баланс
+    </button>
+    
+    <button class="main-btn" onclick="openSupport()" style="background: #9b59b6;">
+        <i class="fas fa-headset"></i> Поддержка
+    </button>
+    
+    <button class="main-btn" style="background: #e74c3c;" onclick="tg.close()">
+        <i class="fas fa-sign-out-alt"></i> Закрыть Mini App
+    </button>
+    
+    <div id="profile-status" class="status-message" style="display: none;"></div>
 </div>
 
 <script>
     let tg = window.Telegram.WebApp;
     tg.expand(); // Расширить на весь экран
-
+    tg.BackButton.hide(); // Скрыть кнопку назад если не нужна
+    
     // Инициализация данных пользователя
-    document.getElementById('user-info').innerText = `Привет, ${tg.initDataUnsafe.user?.first_name || 'Пользователь'}!`;
-    document.getElementById('uid').innerText = tg.initDataUnsafe.user?.id || 'Неизвестно';
+    const user = tg.initDataUnsafe.user;
+    document.getElementById('user-info').innerText = `Привет, ${user?.first_name || 'Пользователь'}!`;
+    document.getElementById('uid').innerText = user?.id || 'Неизвестно';
+    document.getElementById('user-name').innerText = user?.first_name || 'Неизвестно';
+    
+    // Загружаем начальный баланс
+    setTimeout(getBalance, 500);
 
     function showSection(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         event.currentTarget.classList.add('active');
+        
+        // Обновляем баланс при переключении на любую вкладку
+        if (id !== 'profile') {
+            setTimeout(getBalance, 300);
+        }
     }
 
     function sendOrder() {
-        const phone = document.getElementById('phone').value;
-        const text = document.getElementById('sms_text').value;
+        const phone = document.getElementById('phone').value.trim();
+        const text = document.getElementById('sms_text').value.trim();
         const qty = document.getElementById('quantity').value;
+        const statusDiv = document.getElementById('sms-status');
 
         if (!phone || !text) {
-            tg.showAlert("Пожалуйста, заполните все поля!");
+            showStatus('error', 'Пожалуйста, заполните все поля!', statusDiv);
+            return;
+        }
+
+        // Простая валидация номера
+        if (!/^[0-9]{7,15}$/.test(phone)) {
+            showStatus('error', 'Введите корректный номер телефона (только цифры, 7-15 символов)', statusDiv);
+            return;
+        }
+
+        if (text.length > 1000) {
+            showStatus('error', 'Текст сообщения слишком длинный (максимум 1000 символов)', statusDiv);
             return;
         }
 
@@ -223,20 +321,92 @@
             action: 'send_sms',
             phone: phone,
             text: text,
-            qty: qty
+            qty: parseInt(qty)
         };
 
-        tg.sendData(JSON.stringify(data)); // Отправляем данные боту
+        showStatus('warning', 'Отправка заказа...', statusDiv);
+        tg.sendData(JSON.stringify(data));
+        
+        // Очищаем форму после отправки
+        setTimeout(() => {
+            document.getElementById('phone').value = '';
+            document.getElementById('sms_text').value = '';
+            showStatus('success', 'Заказ отправлен! Ожидайте подтверждения в Telegram.', statusDiv);
+        }, 500);
     }
 
-    function buyTemplate(cat) {
-        tg.sendData(JSON.stringify({action: 'open_shop', category: cat}));
+    function openShopCategory(category) {
+        const statusDiv = document.getElementById('shop-status');
+        showStatus('warning', 'Загрузка категории...', statusDiv);
+        
+        const data = {
+            action: 'open_shop',
+            category: category
+        };
+        
+        tg.sendData(JSON.stringify(data));
+        
+        setTimeout(() => {
+            showStatus('success', `Категория "${category}" открыта. Перейдите в Telegram для выбора шаблонов.`, statusDiv);
+        }, 500);
     }
 
     function topUp() {
-        tg.sendData(JSON.stringify({action: 'top_up'}));
+        const statusDiv = document.getElementById('profile-status');
+        showStatus('warning', 'Открытие пополнения баланса...', statusDiv);
+        
+        const data = {
+            action: 'top_up'
+        };
+        
+        tg.sendData(JSON.stringify(data));
+        
+        setTimeout(() => {
+            showStatus('success', 'Перейдите в Telegram для пополнения баланса', statusDiv);
+        }, 500);
     }
+
+    function getBalance() {
+        const data = {
+            action: 'get_balance'
+        };
+        
+        tg.sendData(JSON.stringify(data));
+        
+        // Показываем анимацию загрузки
+        const balanceEl = document.getElementById('user-balance');
+        balanceEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        // Через 2 секунды показываем обновленный баланс (в реальности бот ответит)
+        setTimeout(() => {
+            balanceEl.textContent = 'Обновлено!';
+        }, 2000);
+    }
+
+    function openSupport() {
+        tg.openTelegramLink(`tg://user?id=${tg.initDataUnsafe.user?.id || ''}`);
+    }
+
+    function showStatus(type, message, element) {
+        element.textContent = message;
+        element.className = `status-message ${type}`;
+        element.style.display = 'block';
+        
+        // Скрываем статус через 5 секунд
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, 5000);
+    }
+
+    // Обработка обратной связи от бота (если нужно)
+    tg.onEvent('webAppDataReceived', (event) => {
+        console.log('Данные получены от бота:', event);
+    });
+
+    // Показываем версию приложения в консоли для отладки
+    console.log('Telegram WebApp версия:', tg.version);
+    console.log('Пользователь:', tg.initDataUnsafe.user);
 </script>
 
 </body>
-</html>
+        </html>

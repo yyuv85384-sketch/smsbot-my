@@ -581,10 +581,7 @@ background: linear-gradient(135deg, var(--info), #0870c9);
                         <label class="form-label">
                             <i class="fas fa-clock"></i> Приоритет отправки
                         </label>
-                        <select class="form-select" id="priority"\
-
-
-                            <option value="1">Низкий (до 30 минут) - 1 SMS</option>
+                        <select class="form-select" id="priority"\<option value="1">Низкий (до 30 минут) - 1 SMS</option>
                             <option value="1" selected>Обычный (до 10 минут) - 1 SMS</option>
                             <option value="2">Высокий (до 2 минут) - 2 SMS</option>
                             <option value="3">Мгновенный (до 30 секунд) - 3 SMS</option>
@@ -700,9 +697,7 @@ background: linear-gradient(135deg, var(--info), #0870c9);
                     </button>
                     <button class="admin-btn admin-tab" data-admin-tab="sms" onclick="showAdminTab('sms', this)">
                         <i class="fas fa-sms"></i> Управление SMS
-                    </butto
-
-n>
+                    </button>
                     <button class="admin-btn admin-tab" data-admin-tab="payments" onclick="showAdminTab('payments', this)">
                         <i class="fas fa-money-bill-wave"></i> Платежи
                     </button>
@@ -757,9 +752,7 @@ n>
                     </div>
                 </div>
                 
-                <div id="admin-users
-
-" class="admin-section"></div>
+                <div id="admin-users" class="admin-section"></div>
                 <div id="admin-sms" class="admin-section"></div>
                 <div id="admin-payments" class="admin-section"></div>
                 <div id="admin-settings" class="admin-section"></div>
@@ -851,9 +844,7 @@ n>
 
             if (userData.isAdmin) {
                 loadAdminStats();
-                loa
-
-dAdminTabContent(currentAdminTab);
+                loadAdminTabContent(currentAdminTab);
             }
         });
 
@@ -937,9 +928,7 @@ dAdminTabContent(currentAdminTab);
                 clickedTabElement.classList.add('active');
             }
             
-            document.querySelectorAll(
-
-'.content .section').forEach(section => {
+            document.querySelectorAll('.content .section').forEach(section => {
                 section.classList.remove('active');
             });
             document.getElementById(tabId + '-section').classList.add('active');
@@ -1017,9 +1006,7 @@ dAdminTabContent(currentAdminTab);
             modalContent.innerHTML = `
                 <div style="text-align: center;">
                     <div class="qr-container">
-                        <h4 style="color: var(--
-
-primary); margin-bottom: 15px;">
+                        <h4 style="color: var(--primary); margin-bottom: 15px;">
                             <i class="fas fa-qrcode"></i> Отсканируйте QR-код
                         </h4>
                         <canvas id="qr-code"></canvas>
@@ -1085,9 +1072,7 @@ primary); margin-bottom: 15px;">
             }).catch(err => {
                 console.error("Ошибка генерации QR-кода:", err);
                 showNotification('❌ Ошибка генерации QR-кода', 'error');
-                closeModal('payment');
-
-});
+                closeModal('payment');});
         }
 
         // ==================== КОПИРОВАНИЕ РЕКВИЗИТОВ ====================
@@ -1175,9 +1160,7 @@ primary); margin-bottom: 15px;">
         function setupSMSEditor() {
             const messageInput = document.getElementById('message-text');
             const charCount = document.getElementById('char-count');
-            const sms
-
-CountSlider = document.getElementById('sms-count');
+            const smsCountSlider = document.getElementById('sms-count');
             const smsCountDisplay = document.getElementById('sms-count-display');
             const prioritySelect = document.getElementById('priority');
             const sendCostDisplay = document.getElementById('send-cost');
@@ -1261,9 +1244,7 @@ CountSlider = document.getElementById('sms-count');
                 
                 statusDiv.className = 'status-message success';
                 statusDiv.innerHTML = `
-                    ✅ SMS успешно отправлено!<br>
-
-<small>Номер: ${phone}<br>
+                    ✅ SMS успешно отправлено!<br><small>Номер: ${phone}<br>
                     Количество SMS: ${smsCount}<br>
                     Статус: Доставлено</small>
                 `;
@@ -1330,9 +1311,7 @@ CountSlider = document.getElementById('sms-count');
                                        background: ${item.status === 'confirmed' ? '#d4edda' : 
                                                    item.status === 'pending' ? '#fff3cd' : '#f8d7da'}; 
                                        color: ${item.status === 'confirmed' ? '#155724' : 
-                                               item.status === 'pending' ? '#856404' : '#721c24'};
-
-font-size: 12px; font-weight: bold;">
+                                               item.status === 'pending' ? '#856404' : '#721c24'};font-size: 12px; font-weight: bold;">
                                     ${statusText}
                                 </span>
                             </div>
@@ -1403,7 +1382,6 @@ font-size: 12px; font-weight: bold;">
         }
 
         // =========\
-
             padding: 12px 20px;
             border-radius: 15px;
             display: flex;
@@ -1552,9 +1530,7 @@ font-size: 12px; font-weight: bold;">
             padding: 8px 20px;
             border-radius: 25px;
             font-weight: bold;
-            font-size: 1
-
-6px;
+            font-size: 16px;
         }
         
         .buy-btn {
@@ -1701,9 +1677,7 @@ font-size: 12px; font-weight: bold;">
         
         .copy-btn {
             width: 100%;
-            b
-
-ackground: linear-gradient(135deg, var(--info), #0870c9);
+            background: linear-gradient(135deg, var(--info), #0870c9);
             color: white;
             border: none;
             padding: 16px;
@@ -1823,9 +1797,7 @@ ackground: linear-gradient(135deg, var(--info), #0870c9);
 </head>
 <body>
     <div class="app-container" id="app">
-        <div class="header">
-
-<div class="logo">
+        <div class="header"><div class="logo">
                 <div class="logo-icon">💬</div>
                 <div>SMS Bot</div>
             </div>
@@ -1903,9 +1875,7 @@ ackground: linear-gradient(135deg, var(--info), #0870c9);
                         <label class="form-label">
                             <i class="fas fa-clock"></i> Приоритет отправки
                         </label>
-                        <select class="form-select" id="priority">
-
-<option value="1">Низкий (до 30 минут) - 1 SMS</option>
+                        <select class="form-select" id="priority"><option value="1">Низкий (до 30 минут) - 1 SMS</option>
                             <option value="1" selected>Обычный (до 10 минут) - 1 SMS</option>
                             <option value="2">Высокий (до 2 минут) - 2 SMS</option>
                             <option value="3">Мгновенный (до 30 секунд) - 3 SMS</option>
@@ -1964,15 +1934,12 @@ ackground: linear-gradient(135deg, var(--info), #0870c9);
                         </div>
                         
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                            <div style="background: var(--light); padding: 15px; border-radius: 12px; text-align: center;">
-
-<div style="font-size: 12px; color: #666; margin-bottom: 5px;">Баланс SMS</div>
+                            <div style="background: var(--light); padding: 15px; border-radius: 12px; text-align: center;"><div style="font-size: 12px; color: #666; margin-bottom: 5px;">Баланс SMS</div>
                                 <div style="font-size: 24px; font-weight: bold; color: var(--primary);">
                                     <span id="profile-balance-display">0</span>
                                 </div>
                             </div>
-                            <div style="background: var(--light); padding: 15px; border-radius: 12px; text-align: center;">
-                                <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Отправлено</div>
+                            <div style="background: var(--light); padding: 15px; border-radius: 12px; text-align: center;"><div style="font-size: 12px; color: #666; margin-bottom: 5px;">Отправлено</div>
                                 <div style="font-size: 24px; font-weight: bold; color: var(--success);">
                                     <span id="sent-count">0</span>
                                 </div>
@@ -2022,8 +1989,7 @@ ackground: linear-gradient(135deg, var(--info), #0870c9);
                     <button class="admin-btn admin-tab" data-admin-tab="sms" onclick="showAdminTab('sms', this)">
                         <i class="fas fa-sms"></i> Управление SMS
                     </button>
-
-<button class="admin-btn admin-tab" data-admin-tab="payments" onclick="showAdminTab('payments', this)">
+                    <button class="admin-btn admin-tab" data-admin-tab="payments" onclick="showAdminTab('payments', this)">
                         <i class="fas fa-money-bill-wave"></i> Платежи
                     </button>
                     <button class="admin-btn admin-tab" data-admin-tab="settings" onclick="showAdminTab('settings', this)">
@@ -2077,9 +2043,7 @@ ackground: linear-gradient(135deg, var(--info), #0870c9);
                     </div>
                 </div>
                 
-                <div id="admin-users" class="a
-
-dmin-section"></div>
+                <div id="admin-users" class="admin-section"></div>
                 <div id="admin-sms" class="admin-section"></div>
                 <div id="admin-payments" class="admin-section"></div>
                 <div id="admin-settings" class="admin-section"></div>
@@ -2171,9 +2135,7 @@ dmin-section"></div>
 
             if (userData.isAdmin) {
                 loadAdminStats();
-                loadAdminTabCo
-
-ntent(currentAdminTab);
+                loadAdminTabContent(currentAdminTab);
             }
         });
 
@@ -2257,9 +2219,7 @@ ntent(currentAdminTab);
                 clickedTabElement.classList.add('active');
             }
             
-            document.querySelectorAll('.content
-
-.section').forEach(section => {
+            document.querySelectorAll('.content.section').forEach(section => {
                 section.classList.remove('active');
             });
             document.getElementById(tabId + '-section').classList.add('active');
@@ -2337,9 +2297,7 @@ ntent(currentAdminTab);
             modalContent.innerHTML = `
                 <div style="text-align: center;">
                     <div class="qr-container">
-                        <h4 style="color: var(--primary);
-
-margin-bottom: 15px;">
+                        <h4 style="color: var(--primary);margin-bottom: 15px;">
                             <i class="fas fa-qrcode"></i> Отсканируйте QR-код
                         </h4>
                         <canvas id="qr-code"></canvas>
@@ -2406,9 +2364,7 @@ margin-bottom: 15px;">
                 console.error("Ошибка генерации QR-кода:", err);
                 showNotification('❌ Ошибка генерации QR-кода', 'error');
                 closeModal('payment');
-            });
-
-}
+            });}
 
         // ==================== КОПИРОВАНИЕ РЕКВИЗИТОВ ====================
         function copyPaymentDetails() {
@@ -2495,9 +2451,7 @@ margin-bottom: 15px;">
         function setupSMSEditor() {
             const messageInput = document.getElementById('message-text');
             const charCount = document.getElementById('char-count');
-            const smsCountSlider
-
-= document.getElementById('sms-count');
+            const smsCountSlider= document.getElementById('sms-count');
             const smsCountDisplay = document.getElementById('sms-count-display');
             const prioritySelect = document.getElementById('priority');
             const sendCostDisplay = document.getElementById('send-cost');
@@ -2581,9 +2535,7 @@ margin-bottom: 15px;">
                 
                 statusDiv.className = 'status-message success';
                 statusDiv.innerHTML = `
-                    ✅ SMS успешно отправлено!<br>
-
-<small>Номер: ${phone}<br>
+                    ✅ SMS успешно отправлено!<br><small>Номер: ${phone}<br>
                     Количество SMS: ${smsCount}<br>
                     Статус: Доставлено</small>
                 `;
@@ -2651,8 +2603,7 @@ margin-bottom: 15px;">
                                                    item.status === 'pending' ? '#fff3cd' : '#f8d7da'}; 
                                        color: ${item.status === 'confirmed' ? '#155724' : 
                                                item.status === 'pending' ? '#856404' : '#721c24'};
-
-font-size: 12px; font-weight: bold;">
+                                               font-size: 12px; font-weight: bold;">
                                     ${statusText}
                                 </span>
                             </div>
@@ -2805,9 +2756,7 @@ font-size: 12px; font-weight: bold;">
                             `<div style="max-height: 300px; overflow-y: auto;">
                                 ${userData.users.map(userItem => `
                                     <div style="display: flex; justify-content: space-between; align-items: center; 
-                                         padding: 15px; border-bottom: 1px sol
-
-id var(--gray);">
+                                         padding: 15px; border-bottom: 1px solid var(--gray);">
                                         <div>
                                             <strong>ID: ${userItem.id}</strong><br>
                                             <small>Баланс: ${userItem.balance} SMS</small><br>
@@ -2876,9 +2825,7 @@ id var(--gray);">
             
             if (!id) {
                 showNotification('❌ Введите ID пользователя', 'error');
-                retur
-
-n;
+                return;
             }
             
             if (userData.users.some(u => u.id === id) || id === userData.id) {
@@ -2968,9 +2915,7 @@ n;
         }
 
         function adminAddSMSModal() {
-             document.ge
-
-tElementById('admin-modal-title').innerHTML = '<i class="fas fa-plus"></i> Добавить SMS';
+             document.getElementById('admin-modal-title').innerHTML = '<i class="fas fa-plus"></i> Добавить SMS';
             
             document.getElementById('admin-modal-content').innerHTML = `
                 <div style="padding: 20px;">
@@ -3050,9 +2995,7 @@ tElementById('admin-modal-title').innerHTML = '<i class="fas fa-plus"></i> До�
                     <button class="admin-btn" onclick="showNotification('В разработке!', 'info')">
                         <i class="fas fa-search"></i> Найти SMS
                     </button>
-                    <button class="admin-btn" onclick="showNotification('В разработке!', 'info')" style="backg
-
-round: var(--danger);">
+                    <button class="admin-btn" onclick="showNotification('В разработке!', 'info')" style="background: var(--danger);">
                         <i class="fas fa-trash"></i> Очистить логи SMS
                     </button>
                 </div>
@@ -3112,8 +3055,7 @@ round: var(--danger);">
                                         </span>
                                     </div>
                                     <div style="font-size: 13px; color: #666;">
-
-<div>ID: ${payment.id}</div>
+                                    <div>ID: ${payment.id}</div>
                                         <div>${payment.date}</div>
                                         <div>${payment.usdt} USDT</div>
                                         ${payment.txHash ? `<div>TX: ${payment.txHash.substring(0, 20)}...</div>` : ''}
@@ -3187,9 +3129,7 @@ round: var(--danger);">
                 updatePricesAndShop(); 
                 updateUI();
                 showNotification('✅ Настройки сохранены!', 'success');
-            } else {
-
-showNotification('❌ Некорректное значение курса USDT.', 'error');
+            } else {showNotification('❌ Некорректное значение курса USDT.', 'error');
             }
         }
 
@@ -3271,9 +3211,7 @@ showNotification('❌ Некорректное значение курса USDT.
                 updateUI();
                 loadAdminStats();
                 showNotification('✅ Все данные очищены. Приложение перезагружено.', 'warning');
-                setTimeout(() => window.loc
-
-ation.reload(), 1500);
+                setTimeout(() => window.location.reload(), 1500);
             }
         }
 
@@ -3340,4 +3278,4 @@ ation.reload(), 1500);
         }
     </script>
 </body>
-                </html>
+    </html>

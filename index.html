@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS Mailing - Веб-панель</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-sms"></i>
+                <h1>SMS Mailing</h1>
+            </div>
+            <div class="user-info">
+                <div class="balance">
+                    <span class="balance-item usdt">
+                        <i class="fas fa-coins"></i>
+                        <span id="balance-usdt">0 USDT</span>
+                    </span>
+                    <span class="balance-item ton">
+                        <i class="fas fa-bolt"></i>
+                        <span id="balance-ton">0 TON</span>
+                    </span>
+                </div>
+                <div class="user-menu">
+                    <button id="auth-btn" class="btn-auth">
+                        <i class="fas fa-sign-in-alt"></i> Войти через Telegram
+                    </button>
+                    <div id="user-profile" class="user-profile hidden">
+                        <img id="user-avatar" src="" alt="Аватар">
+                        <div class="user-details">
+                            <span id="user-name"></span>
+                            <span id="user-id"></span>
+                        </div>
+                        <button id="logout-btn" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <!-- Левая панель - Отправка SMS -->
+            <section class="sms-section">
+                <div class="card">
+                    <h2><i class="fas fa-paper-plane"></i> Новая рассылка</h2>
+                    
+                    <div class="form-group">
+                        <label for="numbers"><i class="fas fa-phone"></i> Номера телефонов</label>
+                        <textarea id="numbers" placeholder="Введите номера, разделенные точкой с запятой:
++79991234567 ;
+89991234567 ;
+79001234567 ;" rows="6"></textarea>
+                        <div class="counter">Количество номеров: <span id="number-count">0</span></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message"><i class="fas fa-comment-alt"></i> Текст сообщения</label>
+                        <textarea id="message" placeholder="Введите текст SMS сообщения..." rows="8"></textarea>
+                        <div class="counter">Символов: <span id="char-count">0</span> / 160</div>
+                    </div>
+
+                    <div class="price-info">
+                        <div class="price-card">
+                            <h3><i class="fas fa-calculator"></i> Стоимость рассылки</h3>
+                            <div class="price-details">
+                                <div class="price-item">
+                                    <span class="currency">USDT:</span>
+                                    <span id="price-usdt" class="price">0</span>
+                                </div>
+                                <div class="price-item">
+                                    <span class="currency">TON:</span>
+                                    <span id="price-ton" class="price">0</span>
+                                </div>
+                                <div class="price-item">
+                                    <span class="label">Количество SMS:</span>
+                                    <span id="sms-count" class="value">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-methods">
+                        <h3><i class="fas fa-credit-card"></i> Способ оплаты</h3>
+                        <div class="payment-options">
+                            <label class="payment-option">
+                                <input type="radio" name="payment" value="usdt" checked>
+                                <div class="payment-card">
+                                    <i class="fas fa-coins"></i>
+                                    <span>USDT (TRON)</span>
+                                </div>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment" value="ton">
+                                <div class="payment-card">
+                                    <i class="fas fa-bolt"></i>
+                                    <span>TON</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button id="send-btn" class="btn-send" disabled>
+                        <i class="fas fa-rocket"></i> Отправить на модерацию
+                    </button>
+                </div>
+            </section>
+
+            <!-- Правая панель - История и баланс -->
+            <aside class="sidebar">
+                <!-- Баланс -->
+                <div class="card balance-card">
+                    <h2><i class="fas fa-wallet"></i> Баланс</h2>
+                    <div class="balance-display">
+                        <div class="balance-item-full usdt">
+                            <i class="fas fa-coins"></i>
+                            <div>
+                                <span class="balance-label">USDT</span>
+                                <span id="sidebar-balance-usdt" class="balance-amount">0</span>
+                            </div>
+                        </div>
+                        <div class="balance-item-full ton">
+                            <i class="fas fa-bolt"></i>
+                            <div>
+                                <span class="balance-label">TON</span>
+                                <span id="sidebar-balance-ton" class="balance-amount">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="deposit-btn" class="btn-deposit">
+                        <i class="fas fa-plus-circle"></i> Пополнить баланс
+                    </button>
+                </div>
+
+                <!-- Статистика -->
+                <div class="card stats-card">
+                    <h2><i class="fas fa-chart-line"></i> Статистика</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-sent">0</span>
+                            <span class="stat-label">Всего отправлено</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="success-rate">0%</span>
+                            <span class="stat-label">Успешных</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-cost">0</span>
+                            <span class="stat-label">Общая стоимость</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- История -->
+                <div class="card history-card">
+                    <h2><i class="fas fa-history"></i> Последние операции</h2>
+                    <div id="history-list" class="history-list">
+                        <div class="history-empty">
+                            <i class="fas fa-inbox"></i>
+                            <p>Нет операций</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Контакты -->
+                <div class="card contact-card">
+                    <h2><i class="fas fa-headset"></i> Поддержка</h2>
+                    <div class="contact-info">
+                        <p><i class="fas fa-robot"></i> Бот поддержки: @sms_mailing_bot</p>
+                        <p><i class="fas fa-envelope"></i> Email: support@smsmailing.com</p>
+                        <p><i class="fas fa-clock"></i> Работаем 24/7</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Футер -->
+        <footer class="footer">
+            <p>© 2024 SMS Mailing Service. Все права защищены.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-file-alt"></i> Документация</a>
+                <a href="#"><i class="fas fa-shield-alt"></i> Безопасность</a>
+                <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fab fa-telegram"></i> Вход через Telegram</h2>
+            <p>Для использования сервиса необходимо авторизоваться через Telegram бота</p>
+            <div class="telegram-auth">
+                <div class="qr-code">
+                    <!-- QR код будет здесь -->
+                </div>
+                <div class="auth-actions">
+                    <a id="tg-auth-link" href="#" class="btn-telegram">
+                        <i class="fab fa-telegram"></i> Открыть в Telegram
+                    </a>
+                    <p>или</p>
+                    <div class="tg-manual">
+                        <p>1. Перейдите в бота: @sms_mailing_bot</p>
+                        <p>2. Нажмите кнопку "Войти на сайт"</p>
+                        <p>3. Скопируйте код и вставьте ниже:</p>
+                        <input type="text" id="auth-code" placeholder="Введите код авторизации">
+                        <button id="verify-code" class="btn-verify">Подтвердить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="deposit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-credit-card"></i> Пополнение баланса</h2>
+            
+            <div class="deposit-options">
+                <div class="currency-select">
+                    <h3>Выберите валюту:</h3>
+                    <div class="currency-buttons">
+                        <button class="currency-btn active" data-currency="usdt">
+                            <i class="fas fa-coins"></i> USDT
+                        </button>
+                        <button class="currency-btn" data-currency="ton">
+                            <i class="fas fa-bolt"></i> TON
+                        </button>
+                    </div>
+                </div>
+
+                <div class="amount-select">
+                    <h3>Выберите сумму:</h3>
+                    <div class="amount-grid">
+                        <button class="amount-btn" data-amount="10">10</button>
+                        <button class="amount-btn" data-amount="25">25</button>
+                        <button class="amount-btn" data-amount="50">50</button>
+                        <button class="amount-btn" data-amount="100">100</button>
+                        <button class="amount-btn" data-amount="250">250</button>
+                        <div class="custom-amount">
+                            <input type="number" id="custom-amount" placeholder="Другая сумма" min="10">
+                            <span class="currency-symbol">USDT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="deposit-info">
+                    <div class="info-card">
+                        <h4><i class="fas fa-info-circle"></i> Информация:</h4>
+                        <p>Минимальная сумма: <strong>10 USDT</strong></p>
+                        <p>Сеть: <strong>TRON (TRC20)</strong></p>
+                        <p>Комиссия: <strong>Нет</strong></p>
+                    </div>
+                </div>
+
+                <div class="wallet-address">
+                    <h4>Адрес для пополнения:</h4>
+                    <div class="address-box">
+                        <code id="wallet-address">TJSgjT9n1234567890abcdefghijklmnop</code>
+                        <button class="btn-copy" data-clipboard-target="#wallet-address">
+                            <i class="fas fa-copy"></i> Копировать
+                        </button>
+                    </div>
+                    <p class="warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Отправляйте точную сумму на указанный адрес
+                    </p>
+                </div>
+
+                <button id="confirm-deposit" class="btn-confirm">
+                    <i class="fas fa-check"></i> Я отправил средства
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

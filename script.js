@@ -1,3 +1,7 @@
+// В начале script.js добавьте:
+if (typeof JSON === 'undefined') {
+    alert('Ваш браузер устарел. Пожалуйста, обновите браузер для работы с сайтом.');
+}
 // Конфигурация
 const CONFIG = {
     botToken: '8527321626:AAHGqnSLj6A0p5Rh6ccJxDoDG4dGOXbeQVk',

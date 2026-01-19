@@ -1,4 +1,42 @@
 <?php
+// Включите отображение ошибок для отладки (удалите в продакшене)
+error_reporting(0);
+ini_set('display_errors', 0);
+
+// Установите заголовки перед любым выводом
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+// Обработка CORS
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit(0);
+}
+
+// Обработка ошибок JSON
+function jsonError($message) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => $message]);
+    exit();
+}
+
+// Получение данных
+$input = file_get_contents('php://input');
+if (empty($input)) {
+    jsonError('No input data');
+}
+
+$data = json_decode($input, true);
+if (json_last_error() !== JSON_ERROR_NONE) {
+    jsonError('Invalid JSON: ' . json_last_error_msg());
+}
+
+$action = $data['action'] ?? $_GET['action'] ?? '';
+
+// ... остальной код без изменений ...
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');

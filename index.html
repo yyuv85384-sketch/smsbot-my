@@ -14,21 +14,43 @@
             flex-direction: column;
         }
         
-        .bottom-icon {
-            margin-top: auto; /* Помещает элемент вниз */
-            margin-bottom: 15px; /* Отступ снизу 15px */
-            text-align: center; /* Выравнивание по центру */
+        .bottom-buttons {
+            margin-top: auto;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #f8f8f8;
+            border-top: 1px solid #e0e0e0;
         }
         
-        .bottom-icon img {
-            display: block;
-            margin: 0 auto; /* Центрирование изображения */
+        .tg-button {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            border: none;
+            background-color: #3390ec;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        
+        .tg-button:hover {
+            background-color: #2a7bc8;
         }
     </style>
 </head>
 <body>
-    <div class="bottom-icon">
-        <img src="icon1.png" alt="Иконка">
+    <div class="bottom-buttons">
+        <button class="tg-button">📱</button>
+        <button class="tg-button">📄</button>
+        <button class="tg-button">📊</button>
+        <button class="tg-button">📦</button>
+        <button class="tg-button">🔗</button>
     </div>
 </body>
 </html>

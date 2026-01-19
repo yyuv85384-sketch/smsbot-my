@@ -434,7 +434,8 @@ function copyWalletAddress() {
 
 async function confirmDeposit() {
     const currency = document.querySelector('.currency-btn.active').dataset.currency;
-    const amount = document.getElementById('custom-amount').value;
+    const amountInput = document.getElementById('custom-amount');
+    const amount = amountInput.value;
     
     if (!amount || parseFloat(amount) < 10) {
         alert('Минимальная сумма 10');
@@ -457,15 +458,28 @@ async function confirmDeposit() {
             })
         });
         
-        const result = await response.json();
+        // Проверяем, что ответ валидный JSON
+        const text = await response.text();
+        let result;
+        try {
+            result = JSON.parse(text);
+        } catch (e) {
+            console.error('Invalid JSON response:', text);
+            throw new Error('Сервер вернул некорректный ответ. Попробуйте позже.');
+        }
         
         if (result.success) {
             alert(`✅ Запрос на пополнение создан! Отправьте ${amount} ${currency.toUpperCase()} на указанный адрес и ожидайте подтверждения.`);
             document.getElementById('deposit-modal').style.display = 'none';
+            
+            // Очищаем поле ввода
+            amountInput.value = '';
+            document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
         } else {
-            throw new Error(result.error);
+            throw new Error(result.error || 'Ошибка при создании депозита');
         }
     } catch (error) {
+        console.error('Deposit error:', error);
         alert('❌ Ошибка: ' + error.message);
     } finally {
         showLoading(false);

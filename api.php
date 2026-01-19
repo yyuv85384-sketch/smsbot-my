@@ -1,43 +1,10 @@
 <?php
-// Включите отображение ошибок для отладки (удалите в продакшене)
+// Отключите отображение ошибок в продакшене
 error_reporting(0);
 ini_set('display_errors', 0);
 
-// Установите заголовки перед любым выводом
+// Установите заголовки
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-
-// Обработка CORS
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(200);
-    exit(0);
-}
-
-// Обработка ошибок JSON
-function jsonError($message) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => $message]);
-    exit();
-}
-
-// Получение данных
-$input = file_get_contents('php://input');
-if (empty($input)) {
-    jsonError('No input data');
-}
-
-$data = json_decode($input, true);
-if (json_last_error() !== JSON_ERROR_NONE) {
-    jsonError('Invalid JSON: ' . json_last_error_msg());
-}
-
-$action = $data['action'] ?? $_GET['action'] ?? '';
-
-// ... остальной код без изменений ...
-
-header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
@@ -47,47 +14,69 @@ define('BOT_TOKEN', '8527321626:AAHGqnSLj6A0p5Rh6ccJxDoDG4dGOXbeQVk');
 define('ADMIN_GROUP_ID', -1003629659528);
 define('DATA_FILE', 'users_data.json');
 
-// Обработка CORS
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    exit(0);
+// Обработка CORS preflight запроса
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
 }
 
-// Получение данных
-$input = json_decode(file_get_contents('php://input'), true);
-$action = $input['action'] ?? $_GET['action'] ?? '';
+// Получение входных данных
+$input = file_get_contents('php://input');
+$data = [];
+
+if (!empty($input)) {
+    $data = json_decode($input, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Invalid JSON']);
+        exit();
+    }
+}
+
+// Получение action
+$action = isset($data['action']) ? $data['action'] : (isset($_GET['action']) ? $_GET['action'] : '');
 
 // Функции работы с данными
 function loadData() {
-    if (file_exists(DATA_FILE)) {
-        return json_decode(file_get_contents(DATA_FILE), true);
+    if (!file_exists(DATA_FILE)) {
+        return [];
     }
-    return [];
+    $content = file_get_contents(DATA_FILE);
+    if (empty($content)) {
+        return [];
+    }
+    return json_decode($content, true) ?: [];
 }
 
 function saveData($data) {
     file_put_contents(DATA_FILE, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 }
 
-// Основной роутинг
+// Обработка действий
+if (empty($action)) {
+    echo json_encode(['success' => false, 'error' => 'No action specified']);
+    exit();
+}
+
 switch ($action) {
     case 'send_sms':
-        handleSendSMS($input);
+        handleSendSMS($data);
         break;
     
     case 'get_balance':
-        handleGetBalance($input);
+        handleGetBalance($data);
         break;
     
     case 'create_deposit':
-        handleCreateDeposit($input);
+        handleCreateDeposit($data);
         break;
     
     case 'check_deposit':
-        handleCheckDeposit($input);
+        handleCheckDeposit($data);
         break;
     
     case 'get_history':
-        handleGetHistory($input);
+        handleGetHistory($data);
         break;
     
     default:
@@ -95,7 +84,7 @@ switch ($action) {
         break;
 }
 
-// Обработка отправки SMS
+// Функция обработки отправки SMS
 function handleSendSMS($data) {
     if (empty($data['user_id']) || empty($data['numbers']) || empty($data['message'])) {
         echo json_encode(['success' => false, 'error' => 'Missing required fields']);
@@ -103,71 +92,89 @@ function handleSendSMS($data) {
     }
     
     $userId = $data['user_id'];
-    $numbers = $data['numbers'];
+    $numbers = is_array($data['numbers']) ? $data['numbers'] : [];
     $message = $data['message'];
-    $paymentMethod = $data['payment_method'] ?? 'usdt';
-    $price = $data['price'] ?? 0;
+    $paymentMethod = isset($data['payment_method']) ? $data['payment_method'] : 'usdt';
+    $price = isset($data['price']) ? floatval($data['price']) : 0;
     
-    // Сохраняем заявку
+    // Проверка наличия номеров
+    if (empty($numbers)) {
+        echo json_encode(['success' => false, 'error' => 'No phone numbers provided']);
+        return;
+    }
+    
+    // Генерация ID заявки
     $requestId = 'req_' . time() . '_' . rand(1000, 9999);
     
-    // Отправляем в Telegram бот
-    $telegramResult = sendToTelegramBot($userId, $numbers, $message, $requestId, $price, $paymentMethod);
+    // Отправка в Telegram
+    $result = sendToTelegramBot($userId, $numbers, $message, $requestId, $price, $paymentMethod);
     
-    if ($telegramResult['success']) {
-        echo json_encode(['success' => true, 'request_id' => $requestId]);
+    if ($result['success']) {
+        echo json_encode([
+            'success' => true,
+            'request_id' => $requestId,
+            'message' => 'Заявка отправлена на модерацию'
+        ]);
     } else {
-        echo json_encode(['success' => false, 'error' => $telegramResult['error']]);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Failed to send to Telegram: ' . $result['error']
+        ]);
     }
 }
 
-// Отправка данных в Telegram бот
+// Отправка в Telegram бот
 function sendToTelegramBot($userId, $numbers, $message, $requestId, $price, $paymentMethod) {
     $botToken = BOT_TOKEN;
     
-    // Форматируем номера для отправки
+    // Форматирование номеров
     $formattedNumbers = '';
-    foreach (array_slice($numbers, 0, 5) as $i => $num) {
-        $formattedNumbers .= ($i + 1) . ". `$num`\n";
+    $count = min(count($numbers), 5);
+    for ($i = 0; $i < $count; $i++) {
+        $formattedNumbers .= ($i + 1) . ". `{$numbers[$i]}`\n";
     }
     if (count($numbers) > 5) {
         $formattedNumbers .= "...и еще " . (count($numbers) - 5) . " номеров\n";
     }
     
-    // Формируем сообщение для админа
-    $adminMessage = urlencode(
-        "📩 *НОВАЯ ЗАЯВКА С САЙТА*\n" .
-        "━━━━━━━━━━━━━━━━━━\n" .
-        "👤 *Пользователь:*\n" .
-        "🆔 ID: `$userId`\n" .
-        "🌐 *Источник:* Веб-сайт\n\n" .
-        "📊 *Статистика:*\n" .
-        "📱 Номеров: " . count($numbers) . " шт\n" .
-        "💰 Стоимость: $price " . strtoupper($paymentMethod) . "\n\n" .
-        "📋 *НОМЕРА:*\n" .
-        "```\n$formattedNumbers```\n" .
-        "💬 *ТЕКСТ СМС:*\n" .
-        "```\n" . mb_substr($message, 0, 300) . (mb_strlen($message) > 300 ? '...' : '') . "```\n\n" .
-        "🆔 *ID заявки:* `$requestId`"
-    );
+    // Сообщение для админа
+    $adminMessage = "📩 *НОВАЯ ЗАЯВКА С САЙТА*\n" .
+                    "━━━━━━━━━━━━━━━━━━\n" .
+                    "👤 *Пользователь:*\n" .
+                    "🆔 ID: `{$userId}`\n" .
+                    "🌐 *Источник:* Веб-сайт\n\n" .
+                    "📊 *Статистика:*\n" .
+                    "📱 Номеров: " . count($numbers) . " шт\n" .
+                    "💰 Стоимость: {$price} " . strtoupper($paymentMethod) . "\n\n" .
+                    "📋 *НОМЕРА:*\n" .
+                    "```\n{$formattedNumbers}```\n" .
+                    "💬 *ТЕКСТ СМС:*\n" .
+                    "```\n" . mb_substr($message, 0, 300) . (mb_strlen($message) > 300 ? '...' : '') . "```\n\n" .
+                    "🆔 *ID заявки:* `{$requestId}`";
     
-    // Кнопки для админа
-    $keyboard = json_encode([
+    // Клавиатура для админа
+    $keyboard = [
         'inline_keyboard' => [
             [
-                ['text' => '✅ Подтвердить', 'callback_data' => 'web_ok_' . $userId . '_' . $requestId . '_' . $paymentMethod . '_' . $price],
-                ['text' => '❌ Отклонить', 'callback_data' => 'web_no_' . $userId . '_' . $requestId]
+                [
+                    'text' => '✅ Подтвердить',
+                    'callback_data' => 'web_ok_' . $userId . '_' . $requestId . '_' . $paymentMethod . '_' . $price
+                ],
+                [
+                    'text' => '❌ Отклонить',
+                    'callback_data' => 'web_no_' . $userId . '_' . $requestId
+                ]
             ]
         ]
-    ]);
+    ];
     
-    // Отправляем сообщение админу
+    // Отправка запроса к Telegram API
     $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
     $params = [
         'chat_id' => ADMIN_GROUP_ID,
-        'text' => urldecode($adminMessage), // Исправлено: убрано urlencode
+        'text' => $adminMessage,
         'parse_mode' => 'Markdown',
-        'reply_markup' => $keyboard
+        'reply_markup' => json_encode($keyboard)
     ];
     
     $ch = curl_init();
@@ -175,30 +182,36 @@ function sendToTelegramBot($userId, $numbers, $message, $requestId, $price, $pay
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
+    
+    if ($response === false) {
+        return ['success' => false, 'error' => 'CURL error'];
+    }
     
     $result = json_decode($response, true);
     
     return [
-        'success' => $result['ok'] ?? false,
-        'message_id' => $result['result']['message_id'] ?? null,
-        'error' => $result['description'] ?? null
+        'success' => isset($result['ok']) && $result['ok'],
+        'message_id' => isset($result['result']['message_id']) ? $result['result']['message_id'] : null,
+        'error' => isset($result['description']) ? $result['description'] : null
     ];
 }
 
-// Получение баланса
+// Функция получения баланса
 function handleGetBalance($data) {
     if (empty($data['user_id'])) {
         echo json_encode(['success' => false, 'error' => 'User ID required']);
         return;
     }
     
-    $usersData = loadData();
     $userId = (string)$data['user_id'];
+    $usersData = loadData();
     
-    $balanceUSDT = $usersData[$userId]['balance_USDT'] ?? 0;
-    $balanceTON = $usersData[$userId]['balance_TON'] ?? 0;
+    $balanceUSDT = isset($usersData[$userId]['balance_USDT']) ? floatval($usersData[$userId]['balance_USDT']) : 0;
+    $balanceTON = isset($usersData[$userId]['balance_TON']) ? floatval($usersData[$userId]['balance_TON']) : 0;
     
     echo json_encode([
         'success' => true,
@@ -209,7 +222,7 @@ function handleGetBalance($data) {
     ]);
 }
 
-// Создание депозита
+// Функция создания депозита
 function handleCreateDeposit($data) {
     if (empty($data['user_id']) || empty($data['amount']) || empty($data['currency'])) {
         echo json_encode(['success' => false, 'error' => 'Missing required fields']);
@@ -217,12 +230,20 @@ function handleCreateDeposit($data) {
     }
     
     $userId = $data['user_id'];
-    $amount = $data['amount'];
-    $currency = $data['currency'];
+    $amount = floatval($data['amount']);
+    $currency = strtoupper($data['currency']);
+    
+    // Проверка минимальной суммы
+    $minDeposit = 10;
+    if ($amount < $minDeposit) {
+        echo json_encode(['success' => false, 'error' => "Минимальная сумма {$minDeposit} {$currency}"]);
+        return;
+    }
+    
     $depositId = 'dep_' . time() . '_' . rand(1000, 9999);
     
-    // Генерация адреса в зависимости от валюты
-    if ($currency == 'USDT') {
+    // Адрес в зависимости от валюты
+    if ($currency === 'USDT') {
         $address = "TJSgjT9n1234567890abcdefghijklmnop";
         $network = "TRON (TRC20)";
     } else {
@@ -230,20 +251,19 @@ function handleCreateDeposit($data) {
         $network = "The Open Network";
     }
     
-    // Отправляем уведомление админу
+    // Отправка уведомления админу
     $botToken = BOT_TOKEN;
-    $adminMessage = 
-        "💸 *НОВЫЙ ДЕПОЗИТ С САЙТА*\n" .
-        "━━━━━━━━━━━━━━━━━━\n" .
-        "👤 *Пользователь:*\n" .
-        "🆔 ID: `$userId`\n" .
-        "🌐 *Источник:* Веб-сайт\n\n" .
-        "💰 *Детали депозита:*\n" .
-        "💎 Сумма: $amount $currency\n" .
-        "🌐 Сеть: $network\n\n" .
-        "📨 *Адрес для проверки:*\n" .
-        "`$address`\n\n" .
-        "🆔 *ID депозита:* `$depositId`";
+    $adminMessage = "💸 *НОВЫЙ ДЕПОЗИТ С САЙТА*\n" .
+                    "━━━━━━━━━━━━━━━━━━\n" .
+                    "👤 *Пользователь:*\n" .
+                    "🆔 ID: `{$userId}`\n" .
+                    "🌐 *Источник:* Веб-сайт\n\n" .
+                    "💰 *Детали депозита:*\n" .
+                    "💎 Сумма: {$amount} {$currency}\n" .
+                    "🌐 Сеть: {$network}\n\n" .
+                    "📨 *Адрес для пополнения:*\n" .
+                    "`{$address}`\n\n" .
+                    "🆔 *ID депозита:* `{$depositId}`";
     
     $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
     $params = [
@@ -257,6 +277,7 @@ function handleCreateDeposit($data) {
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     curl_exec($ch);
     curl_close($ch);
     
@@ -266,24 +287,25 @@ function handleCreateDeposit($data) {
         'address' => $address,
         'network' => $network,
         'amount' => $amount,
-        'currency' => $currency
+        'currency' => $currency,
+        'message' => 'Депозит создан. Отправьте средства на указанный адрес.'
     ]);
 }
 
-// Получение истории операций
+// Функция получения истории
 function handleGetHistory($data) {
     if (empty($data['user_id'])) {
         echo json_encode(['success' => false, 'error' => 'User ID required']);
         return;
     }
     
-    $usersData = loadData();
     $userId = (string)$data['user_id'];
+    $usersData = loadData();
     
-    $transactions = $usersData[$userId]['transactions'] ?? [];
+    $transactions = isset($usersData[$userId]['transactions']) ? $usersData[$userId]['transactions'] : [];
     
-    // Ограничиваем последние 10 транзакций
-    $recentTransactions = array_slice($transactions, -10);
+    // Последние 10 транзакций
+    $recentTransactions = array_slice(array_reverse($transactions), 0, 10);
     
     echo json_encode([
         'success' => true,
@@ -291,9 +313,12 @@ function handleGetHistory($data) {
     ]);
 }
 
-// Проверка депозита
+// Функция проверки депозита
 function handleCheckDeposit($data) {
-    // Временная заглушка
-    echo json_encode(['success' => true, 'status' => 'pending']);
+    echo json_encode([
+        'success' => true,
+        'status' => 'pending',
+        'message' => 'Депозит находится в обработке'
+    ]);
 }
 ?>

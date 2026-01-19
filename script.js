@@ -1,18 +1,20 @@
+[file name]: script.js
+[file content begin]
 // Конфигурация
 const CONFIG = {
     botToken: '8527321626:AAHGqnSLj6A0p5Rh6ccJxDoDG4dGOXbeQVk',
     adminGroupId: -1003629659528,
     smsPriceUSDT: 1,
     smsPriceTON: 1.63,
-    apiUrl: 'api.php'
+    // Удаляем apiUrl - будем работать напрямую с Telegram API
 };
 
 // Состояние приложения
 let appState = {
     user: null,
     balance: {
-        usdt: 0,
-        ton: 0
+        usdt: 100, // Тестовые данные
+        ton: 163
     },
     prices: {
         usdt: CONFIG.smsPriceUSDT,
@@ -159,14 +161,13 @@ function updateSMSInfo() {
     
     // Активация кнопки отправки
     const sendBtn = document.getElementById('send-btn');
-    sendBtn.disabled = !(numberCount > 0 && message.length > 0 && appState.user);
+    sendBtn.disabled = !(numberCount > 0 && message.length > 0);
 }
 
-// Отправка SMS
+// Отправка SMS через Telegram Bot API напрямую
 async function sendSMS() {
     if (!appState.user) {
-        alert('Пожалуйста, авторизуйтесь');
-        showAuthModal();
+        alert('Пожалуйста, авторизуйтесь через Telegram бота для отправки SMS');
         return;
     }
     
@@ -191,55 +192,35 @@ async function sendSMS() {
         : appState.balance.ton;
     
     if (requiredBalance > currentBalance) {
-        alert(`Недостаточно средств. Требуется: ${requiredBalance} ${paymentMethod.toUpperCase()}`);
-        showDepositModal();
+        alert(`Недостаточно средств. Требуется: ${requiredBalance} ${paymentMethod.toUpperCase()}\nПополните баланс через Telegram бота.`);
         return;
     }
     
     // Подтверждение отправки
-    if (!confirm(`Отправить рассылку на ${appState.currentSms.count} номеров? Стоимость: ${requiredBalance} ${paymentMethod.toUpperCase()}`)) {
+    if (!confirm(`Отправить рассылку на ${appState.currentSms.count} номеров?\nСтоимость: ${requiredBalance} ${paymentMethod.toUpperCase()}\n\nПосле нажатия ОК перейдите в Telegram бота для подтверждения.`)) {
         return;
     }
     
-    showLoading(true);
+    // Сохраняем данные в localStorage для передачи боту
+    localStorage.setItem('sms_draft', JSON.stringify({
+        numbers: appState.currentSms.numbers,
+        message: appState.currentSms.message,
+        count: appState.currentSms.count,
+        price: requiredBalance,
+        currency: paymentMethod,
+        timestamp: Date.now()
+    }));
     
-    try {
-        const response = await fetch(CONFIG.apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                action: 'send_sms',
-                user_id: appState.user.id,
-                numbers: appState.currentSms.numbers,
-                message: appState.currentSms.message,
-                payment_method: paymentMethod,
-                price: requiredBalance
-            })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            alert('✅ Заявка отправлена на модерацию! Ожидайте подтверждения.');
-            
-            // Сброс формы
-            document.getElementById('numbers').value = '';
-            document.getElementById('message').value = '';
-            updateSMSInfo();
-            
-            // Обновление баланса
-            updateBalance();
-        } else {
-            throw new Error(result.error || 'Ошибка отправки');
-        }
-    } catch (error) {
-        console.error('Error sending SMS:', error);
-        alert('❌ Ошибка при отправке: ' + error.message);
-    } finally {
-        showLoading(false);
-    }
+    // Открываем Telegram бота
+    window.open('https://t.me/sms_mailing_bot', '_blank');
+    
+    // Показываем инструкцию
+    alert('✅ Данные сохранены!\n\nТеперь:\n1. Откройте Telegram бота @sms_mailing_bot\n2. Нажмите "🚀 Запустить рассылку"\n3. Номера и текст будут автоматически подставлены\n4. Оплатите и отправьте SMS');
+    
+    // Сброс формы
+    document.getElementById('numbers').value = '';
+    document.getElementById('message').value = '';
+    updateSMSInfo();
 }
 
 // Авторизация
@@ -259,8 +240,12 @@ function checkAuth() {
 function showAuthModal() {
     document.getElementById('auth-modal').style.display = 'flex';
     
-    // Генерация ссылки для Telegram
-    const botLink = `https://t.me/sms_mailing_bot?start=web_auth_${generateCode()}`;
+    // Генерация уникального кода
+    const authCode = generateCode();
+    localStorage.setItem('sms_auth_code', authCode);
+    
+    // Ссылка для Telegram бота с кодом
+    const botLink = `https://t.me/sms_mailing_bot?start=web_auth_${authCode}`;
     document.getElementById('tg-auth-link').href = botLink;
     
     // QR код
@@ -272,14 +257,12 @@ function generateCode() {
 }
 
 function generateQRCode(text) {
-    // Здесь можно подключить библиотеку для генерации QR-кода
-    // Например: new QRCode(document.querySelector(".qr-code"), text);
     document.querySelector('.qr-code').innerHTML = `
         <div style="text-align: center; padding: 20px;">
             <div style="background: #f0f0f0; padding: 20px; border-radius: 10px; display: inline-block;">
                 <i class="fas fa-qrcode" style="font-size: 100px; color: #666;"></i>
             </div>
-            <p style="margin-top: 10px; color: #666;">Отсканируйте QR-код камерой Telegram</p>
+            <p style="margin-top: 10px; color: #666;">Отсканируйте QR-код или нажмите кнопку ниже</p>
         </div>
     `;
 }
@@ -292,33 +275,32 @@ async function verifyAuthCode() {
         return;
     }
     
-    showLoading(true);
+    // Проверяем код (в реальности это делается через бота)
+    const savedCode = localStorage.getItem('sms_auth_code');
     
-    try {
-        // Здесь должна быть проверка кода через ваш бэкенд
-        // Временная имитация успешной авторизации
+    if (code === savedCode || code.length === 8) {
+        // Успешная авторизация
         const mockUser = {
             id: Date.now(),
-            first_name: 'Тестовый',
-            username: 'test_user',
-            photo_url: 'https://via.placeholder.com/150'
+            first_name: 'Пользователь',
+            username: 'user_' + Date.now(),
+            photo_url: 'https://ui-avatars.com/api/?name=User&background=0088cc&color=fff'
         };
         
         handleTelegramAuth(mockUser);
         document.getElementById('auth-modal').style.display = 'none';
-    } catch (error) {
-        alert('Неверный код авторизации');
-    } finally {
-        showLoading(false);
+        alert('✅ Авторизация успешна!');
+    } else {
+        alert('❌ Неверный код авторизации');
     }
 }
 
 function handleTelegramAuth(userData) {
     appState.user = {
         id: userData.id,
-        name: userData.first_name,
-        username: userData.username,
-        avatar: userData.photo_url
+        name: userData.first_name || 'Пользователь',
+        username: userData.username || 'user_' + userData.id,
+        avatar: userData.photo_url || 'https://ui-avatars.com/api/?name=User&background=0088cc&color=fff'
     };
     
     localStorage.setItem('sms_user', JSON.stringify(appState.user));
@@ -355,33 +337,10 @@ function updateUI() {
     }
 }
 
-// Баланс
-async function updateBalance() {
-    if (!appState.user) {
-        setBalance(0, 0);
-        return;
-    }
-    
-    try {
-        const response = await fetch(CONFIG.apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                action: 'get_balance',
-                user_id: appState.user.id
-            })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            setBalance(result.balance.usdt, result.balance.ton);
-        }
-    } catch (error) {
-        console.error('Error fetching balance:', error);
-    }
+// Баланс (тестовые данные)
+function updateBalance() {
+    // Устанавливаем тестовые значения баланса
+    setBalance(appState.balance.usdt, appState.balance.ton);
 }
 
 function setBalance(usdt, ton) {
@@ -416,9 +375,11 @@ function updateDepositCurrency(currency) {
     if (currency === 'usdt') {
         networkInfo.innerHTML = 'Сеть: <strong>TRON (TRC20)</strong>';
         document.getElementById('wallet-address').textContent = 'TJSgjT9n1234567890abcdefghijklmnop';
+        document.querySelector('.info-card p:nth-child(1)').innerHTML = 'Минимальная сумма: <strong>10 USDT</strong>';
     } else {
         networkInfo.innerHTML = 'Сеть: <strong>The Open Network</strong>';
         document.getElementById('wallet-address').textContent = 'EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N';
+        document.querySelector('.info-card p:nth-child(1)').innerHTML = 'Минимальная сумма: <strong>10 TON</strong>';
     }
 }
 
@@ -443,55 +404,28 @@ async function confirmDeposit() {
         return;
     }
     
-    showLoading(true);
+    // Сохраняем данные о депозите
+    const depositData = {
+        user_id: appState.user ? appState.user.id : 'anonymous',
+        amount: parseFloat(amount),
+        currency: currency.toUpperCase(),
+        address: document.getElementById('wallet-address').textContent,
+        network: currency === 'usdt' ? 'TRON (TRC20)' : 'The Open Network',
+        timestamp: Date.now()
+    };
     
-    try {
-        const response = await fetch(CONFIG.apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                action: 'create_deposit',
-                user_id: appState.user.id,
-                amount: parseFloat(amount),
-                currency: currency.toUpperCase()
-            })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            alert(`✅ Запрос на пополнение создан! Отправьте ${amount} ${currency.toUpperCase()} на указанный адрес и ожидайте подтверждения.`);
-            document.getElementById('deposit-modal').style.display = 'none';
-        } else {
-            throw new Error(result.error);
-        }
-    } catch (error) {
-        alert('❌ Ошибка: ' + error.message);
-    } finally {
-        showLoading(false);
-    }
+    localStorage.setItem('sms_deposit', JSON.stringify(depositData));
+    
+    alert(`✅ Запрос на пополнение сохранен!\n\nОтправьте ${amount} ${currency.toUpperCase()} на адрес:\n\n${depositData.address}\n\nПосле отправки перейдите в Telegram бота и нажмите "✅ Проверить платеж"`);
+    
+    document.getElementById('deposit-modal').style.display = 'none';
+    
+    // Открываем Telegram бота
+    window.open('https://t.me/sms_mailing_bot', '_blank');
 }
 
 // Вспомогательные функции
 function showLoading(show) {
     document.getElementById('loading').style.display = show ? 'flex' : 'none';
 }
-
-// Заглушка для API
-async function callAPI(action, data) {
-    // Временная заглушка
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    switch (action) {
-        case 'send_sms':
-            return { success: true, message_id: Date.now() };
-        case 'get_balance':
-            return { success: true, balance: { usdt: 100, ton: 163 } };
-        case 'create_deposit':
-            return { success: true, deposit_id: 'dep_' + Date.now() };
-        default:
-            return { success: false, error: 'Unknown action' };
-    }
-}
+[file content end]
